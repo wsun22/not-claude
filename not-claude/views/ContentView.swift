@@ -8,40 +8,58 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var showSidebar = false
-    
-    init() {
-        print("[ContentView] init")
-        print(showSidebar)
-    }
+    @State private var offset: CGFloat = 0
+    @State private var offsetSum: CGFloat = 0
     
     var body: some View {
-        ZStack {
-            AppColors.backgroundPrimary.ignoresSafeArea()
+        GeometryReader { proxy in
+            let size = proxy.size
+//            let sizeBarWidth: CGFloat = 200
             
-            SidebarView()
-                .frame(width: 50)
-                .offset(x: showSidebar ? 0: -250)
-                .zIndex(1)
-            
-            VStack {
-                Image(systemName: "globe")
-                    .imageScale(.large)
-                    .foregroundStyle(AppColors.accent)
-                Text("Hello, world!")
-                    .foregroundStyle(AppColors.textSecondary)
+            ZStack(alignment: .leading) {
+                // slide menu
+                ZStack {
+                    Color.white.ignoresSafeArea()
+                    
+                    Button {
+                        print("pressed")
+                    } label: {
+                        Text("press me")
+                    }
+                }
+                .frame(width: size.width * 0.8)
+                
+                // main content
+                ZStack {
+                    AppColors.backgroundPrimary.ignoresSafeArea()
+                    
+                    Image(systemName: "globe")
+                        .foregroundStyle(AppColors.accent)
+                }
+                .offset(x: offset)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if value.translation.width > 0 {
+                                offset = value.translation.width
+                            }
+                        }
+                        .onEnded { value in
+                            if value.translation.width > size.width * 0.2 {
+                                offset = size.width * 0.8
+                            } else {
+                                offset = 0
+                            }
+                        }
+                )
+                .onTapGesture {
+                    offset = 0
+                }
+
             }
-            .offset(x: showSidebar ? 50: 0)
-            .zIndex(2)
-        }.gesture(
-            DragGesture()
-                .onEnded( { value in
-                    if value.translation.width > 50 {
-                        showSidebar = true }
-                    if value.translation.width < -50 { showSidebar = false }
-                })
-        )
+        }
     }
+    
 }
 
 #Preview {
