@@ -9,12 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var offset: CGFloat = 0
-    @State private var offsetSum: CGFloat = 0
+    @State private var lastDragOffset: CGFloat = 0
+    
+    init() {
+        print("[ContentView] offset is \(offset)")
+    }
     
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
-//            let sizeBarWidth: CGFloat = 200
+            let threshold = size.width * 0.2
             
             ZStack(alignment: .leading) {
                 // slide menu
@@ -28,6 +32,12 @@ struct ContentView: View {
                     }
                 }
                 .frame(width: size.width * 0.8)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            
+                        }
+                )
                 
                 // main content
                 ZStack {
@@ -40,26 +50,35 @@ struct ContentView: View {
                 .gesture(
                     DragGesture()
                         .onChanged { value in
-                            if value.translation.width > 0 {
+                            if value.translation.width > 0 && lastDragOffset + offset < size.width {
                                 offset = value.translation.width
                             }
                         }
                         .onEnded { value in
-                            if value.translation.width > size.width * 0.2 {
+                            if value.translation.width > size.width * 0.3 {
+                                print("[ltr] threshold paased")
                                 offset = size.width * 0.8
+                                lastDragOffset = offset
+                            } else if lastDragOffset == size.width * 0.8 {
+                                print("[ltr] top screen already offset")
+                         //       lastDragOffset = offset
                             } else {
+                                print("[ltr] threshold not passed")
                                 offset = 0
                             }
                         }
                 )
                 .onTapGesture {
                     offset = 0
+                    lastDragOffset = 0
                 }
-
+                
             }
         }
+        .onChange(of: offset) {
+            print(offset)
+        }
     }
-    
 }
 
 #Preview {
