@@ -11,6 +11,8 @@ struct ContentView: View {
     @State private var offset: CGFloat = 0
     @State private var lastDragOffset: CGFloat = 0
     
+    @State private var otherOffset: CGFloat = 0
+    
     init() {
         print("[ContentView] offset is \(offset)")
     }
@@ -35,7 +37,21 @@ struct ContentView: View {
                 .gesture(
                     DragGesture()
                         .onChanged { value in
-                            
+                            if value.translation.width < 0 {
+                                otherOffset = value.translation.width
+                                print("hello")
+                            }
+                        }
+                        .onEnded { value in
+                            print(abs(value.translation.width))
+                            print(size.width * 0.1)
+                            if abs(value.translation.width) > size.width * 0.2 {
+                                offset = 0
+                                otherOffset = 0
+                                print("[rtl] threshold passed")
+                            } else {
+                                otherOffset = 0
+                            }
                         }
                 )
                 
@@ -47,6 +63,7 @@ struct ContentView: View {
                         .foregroundStyle(AppColors.accent)
                 }
                 .offset(x: offset)
+                .offset(x: otherOffset)
                 .gesture(
                     DragGesture()
                         .onChanged { value in
