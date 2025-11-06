@@ -20,7 +20,8 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
-            let threshold = size.width * 0.2
+            let slideThreshold = size.width * 0.4
+            let bottomViewWidth = size.width * 0.85
             
             ZStack(alignment: .leading) {
                 // slide menu
@@ -33,7 +34,7 @@ struct ContentView: View {
                         Text("press me")
                     }
                 }
-                .frame(width: size.width * 0.8)
+                .frame(width: bottomViewWidth)
                 .gesture(
                     DragGesture()
                         .onChanged { value in
@@ -43,11 +44,11 @@ struct ContentView: View {
                             }
                         }
                         .onEnded { value in
-                            print(abs(value.translation.width))
-                            print(size.width * 0.1)
-                            if abs(value.translation.width) > size.width * 0.2 {
+                            if abs(value.translation.width) > slideThreshold {
                                 offset = 0
                                 otherOffset = 0
+                                lastDragOffset = 0
+                                haptic(.medium)
                                 print("[rtl] threshold passed")
                             } else {
                                 otherOffset = 0
@@ -76,11 +77,12 @@ struct ContentView: View {
                             }
                         }
                         .onEnded { value in
-                            if value.translation.width > size.width * 0.25 {
+                            if value.translation.width > slideThreshold {
                                 print("[ltr] threshold paased")
-                                offset = size.width * 0.8 // offset top screen
+                                offset = bottomViewWidth // offset top screen
                                 lastDragOffset = offset // store
-                            } else if lastDragOffset == size.width * 0.8 {
+                                haptic(.medium)
+                            } else if lastDragOffset == bottomViewWidth {
                                 // if top screen is already offset, dont apply the new offset
                                 print("[ltr] top screen already offset")
                             } else {
@@ -90,8 +92,11 @@ struct ContentView: View {
                         }
                 )
                 .onTapGesture {
-                    offset = 0
-                    lastDragOffset = 0
+                    if lastDragOffset == bottomViewWidth {
+                        offset = 0
+                        lastDragOffset = 0
+                        haptic(.medium)
+                    }
                 }
                 
             }
