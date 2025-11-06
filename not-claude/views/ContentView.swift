@@ -14,28 +14,19 @@ struct ContentView: View {
     
     var body: some View {
         GeometryReader { proxy in
-            let size = proxy.size
-            let slideThreshold = size.width * 0.4
-            let bottomViewWidth = size.width * 0.85
+            let size: CGSize = proxy.size
+            let slideThreshold: CGFloat = size.width * 0.4
+            let bottomViewWidth: CGFloat = size.width * 0.85
+            let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
-                // slide menu
-                ZStack {
-                    Color.white.ignoresSafeArea()
-                    
-                    Button {
-                        print("pressed")
-                        print(type(of: size))
-                        print(type(of: slideThreshold))
-                        print(type(of: bottomViewWidth))
-                    } label: {
-                        Text("press me")
-                    }
-                }
-                .frame(width: bottomViewWidth)
-                .gesture(handleRtlDrag(size: size, slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
+                // bottom screen
+                SidebarView()
+                    .frame(width: bottomViewWidth)
+//                    .border(.red, width: 10)
+                    .gesture(handleRtlDrag(size: size, slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
                 
-                // main content
+                // top screen
                 ZStack {
                     AppColors.backgroundPrimary.ignoresSafeArea()
                     
@@ -44,17 +35,22 @@ struct ContentView: View {
                 }
                 .offset(x: ltrOffset)
                 .offset(x: rtlOffset)
-                .gesture(handleLtrDrag(size: size, slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
-                .onTapGesture { handleTap(bottomViewWidth: bottomViewWidth) }
+                .gesture(handleLtrDrag(size: size,
+                                       slideThreshold: slideThreshold,
+                                       bottomViewWidth: bottomViewWidth,
+                                       isTopOffset: isTopOffset))
+                .onTapGesture { handleTap(isTopOffset: isTopOffset) }
             }
         }
     }
+    
     /*
     handles left to right drags for the top screen
      */
     private func handleLtrDrag(size: CGSize,
                                slideThreshold: CGFloat,
-                               bottomViewWidth: CGFloat) -> some Gesture {
+                               bottomViewWidth: CGFloat,
+                               isTopOffset: Bool) -> some Gesture {
         DragGesture()
             .onChanged { value in
                 if (value.translation.width > 0) && (ltrOffset + lastOffset < size.width) {
@@ -64,18 +60,23 @@ struct ContentView: View {
             .onEnded { value in
                 if value.translation.width > slideThreshold {
                     print("[ltr] threshold paased")
-                    ltrOffset = bottomViewWidth // offset top screen
-                    lastOffset = ltrOffset // store
+                    withAnimation(.snappy(duration: 0.25, extraBounce: 0)) {
+                        ltrOffset = bottomViewWidth // offset top screen
+                        lastOffset = ltrOffset // store
+                    }
                     haptic(.medium)
-                } else if lastOffset != bottomViewWidth { // if top screen is not already offset
+                } else if !isTopOffset { // if top screen is not already offset
                     print("[ltr] threshold not passed")
-                    ltrOffset = 0
+                    withAnimation(.snappy(duration: 0.25, extraBounce: 0)) {
+                        ltrOffset = 0
+                    }
                 }
             }
     }
     
     /*
      handles right to left drags for bottom screen
+     todo: pretty sure there needs to be min/maxing somewhere bc fast rtl drags/taps cause flash of underneath background on rhs
      */
     private func handleRtlDrag(size: CGSize,
                                slideThreshold: CGFloat,
@@ -88,13 +89,17 @@ struct ContentView: View {
             }
             .onEnded { value in
                 if abs(value.translation.width) > slideThreshold {
-                    ltrOffset = 0
-                    rtlOffset = 0
-                    lastOffset = 0
+                    withAnimation(.snappy(duration: 0.25, extraBounce: 0)) {
+                        ltrOffset = 0
+                        rtlOffset = 0
+                        lastOffset = 0
+                    }
                     haptic(.medium)
                     print("[rtl] threshold passed")
                 } else {
-                    rtlOffset = 0
+                    withAnimation(.snappy(duration: 0.25, extraBounce: 0)) {
+                        rtlOffset = 0
+                    }
                 }
             }
     }
@@ -102,11 +107,14 @@ struct ContentView: View {
     /*
      handles the tap gesture for top screen when it is offset
      */
-    private func handleTap(bottomViewWidth: CGFloat) {
-        if lastOffset == bottomViewWidth {
-            ltrOffset = 0
-            lastOffset = 0
+    private func handleTap(isTopOffset: Bool) {
+        if isTopOffset {
+            withAnimation(.snappy(duration: 0.25, extraBounce: 0)) {
+                ltrOffset = 0
+                lastOffset = 0
+            }
             haptic(.medium)
+            print("Tapped")
         }
     }
 }
