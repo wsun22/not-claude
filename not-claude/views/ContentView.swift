@@ -22,8 +22,18 @@ struct ContentView: View {
             ZStack {
                 AppColors.backgroundPrimary.ignoresSafeArea()
                 
-                Image(systemName: "globe")
-                    .foregroundStyle(AppColors.accent)
+                VStack {
+                    Image(systemName: "globe")
+                        .foregroundStyle(AppColors.accent)
+
+                    Text("How can I help you this afternoon?")
+                        .font(.tienne())
+                        .foregroundStyle(AppColors.textPrimary)
+                    
+                    Text("How can I help you this afternoon?")
+                        .font(.styreneB())
+                        .foregroundStyle(AppColors.textPrimary)
+                }
                 
             }
         case .test:
@@ -48,7 +58,7 @@ struct ContentView: View {
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
-                AppColors.backgroundSecondary.ignoresSafeArea()
+                AppColors.backgroundSecondary.ignoresSafeArea() // this is bc the rhs background of sidebarview is cut off by the frame width. can this be avoided?
                 
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
