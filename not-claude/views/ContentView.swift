@@ -47,10 +47,10 @@ struct ContentView: View {
             let bottomViewWidth: CGFloat = size.width * 0.85
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
-            ZStack {
-         //       AppColors.backgroundSecondary.ignoresSafeArea()
+            ZStack(alignment: .leading) {
+                AppColors.backgroundSecondary.ignoresSafeArea()
                 
-                // bottom screen--is alwats SidebarView()
+                // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
                             ltrOffset: $ltrOffset,
                             lastOffset: $lastOffset)
@@ -61,13 +61,18 @@ struct ContentView: View {
                 
                 // top screen--depends
                 topScreen
-                .clipShape(RoundedRectangle(cornerRadius: 51))
-                .offset(x: ltrOffset)
-                .offset(x: rtlOffset)
-                .gesture(handleLtrDrag(size: size,
-                                       slideThreshold: slideThreshold,
-                                       bottomViewWidth: bottomViewWidth,
-                                       isTopOffset: isTopOffset))
+               //    .clipShape(RoundedRectangle(cornerRadius: 51)) // clipshape or cornerRadius ?
+                    .cornerRadius(45)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 45)
+                            .stroke(.white, lineWidth: ltrOffset == 0 ? 0 : 0.5)
+                    )
+                    .offset(x: ltrOffset)
+                    .offset(x: rtlOffset)
+                    .gesture(handleLtrDrag(size: size,
+                                           slideThreshold: slideThreshold,
+                                           bottomViewWidth: bottomViewWidth,
+                                           isTopOffset: isTopOffset))
                 .onTapGesture { handleTap(isTopOffset: isTopOffset) }
             }
             .ignoresSafeArea()
