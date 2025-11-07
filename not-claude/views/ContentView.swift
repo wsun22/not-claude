@@ -22,16 +22,16 @@ struct ContentView: View {
             ZStack {
                 AppColors.backgroundPrimary.ignoresSafeArea()
                 
-                VStack {
+                VStack(spacing: 16) {
                     Image(systemName: "globe")
                         .foregroundStyle(AppColors.accent)
 
                     Text("How can I help you this afternoon?")
-                        .font(.tienne())
+                        .font(.tienne(fontStyle: .title, fontWeight: .bold))
                         .foregroundStyle(AppColors.textPrimary)
                     
-                    Text("How can I help you this afternoon?")
-                        .font(.styreneB())
+                    Text("Claude's UI font choices")
+                        .font(.styreneB(fontStyle: .headline))
                         .foregroundStyle(AppColors.textPrimary)
                 }
                 
