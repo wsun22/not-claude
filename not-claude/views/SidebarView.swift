@@ -9,24 +9,27 @@ import Foundation
 import SwiftUI
 
 struct SidebarView: View {
-    
-    init() {
-        print("[SidebarView] init")
-    }
+    @Binding var topView: TopScreenViews
     
     var body: some View {
         ZStack {
-           // Color.white.ignoresSafeArea()
-            AppColors.backgroundSecondary.ignoresSafeArea()
+            Color.white.ignoresSafeArea()
+         //   AppColors.backgroundSecondary.ignoresSafeArea()
             
             VStack {
-                Text("hello")
-                    .foregroundStyle(AppColors.textPrimary)
+                Button {
+                    topView = .chat
+                } label: {
+                    Text("tap for chat view")
+                }
+                Button {
+                    topView = .test
+                } label: {
+                    Text("tap for test screen")
+                }
+
             }
         }
     }
 }
 
-#Preview {
-    SidebarView()
-}

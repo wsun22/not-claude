@@ -7,10 +7,39 @@
 
 import SwiftUI
 
+enum TopScreenViews {
+    case chat
+    case test
+}
+
 struct ContentView: View {
+    @State private var topView: TopScreenViews = .chat
+    
+    @ViewBuilder
+    private var topScreen: some View {
+        switch topView {
+        case .chat:
+            ZStack {
+                AppColors.backgroundPrimary.ignoresSafeArea()
+                
+                Image(systemName: "globe")
+                    .foregroundStyle(AppColors.accent)
+                
+            }
+        case .test:
+            ZStack {
+                Color.red.ignoresSafeArea()
+                
+                Text("hello")
+                    .foregroundStyle(.white)
+            }
+        }
+    }
+    
     @State private var ltrOffset: CGFloat = 0 // handle left to right drags
     @State private var rtlOffset: CGFloat = 0 // handle right to left drags
     @State private var lastOffset: CGFloat = 0
+    
     
     // animation constants
     private let duration: Double = 0.4
@@ -24,22 +53,18 @@ struct ContentView: View {
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack {
-                AppColors.backgroundSecondary.ignoresSafeArea()
+         //       AppColors.backgroundSecondary.ignoresSafeArea()
                 
-                // bottom screen
-                SidebarView()
+                // bottom screen--is alwats SidebarView()
+                SidebarView(topView: $topView)
                     .frame(width: bottomViewWidth)
-//                    .border(.red, width: 10)
-                    .gesture(handleRtlDrag(size: size, slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
+                    .gesture(handleRtlDrag(size: size,
+                                           slideThreshold: slideThreshold,
+                                           bottomViewWidth: bottomViewWidth))
                 
-                // top screen
-                ZStack {
-                    AppColors.backgroundPrimary.ignoresSafeArea()
-                    
-                    Image(systemName: "globe")
-                        .foregroundStyle(AppColors.accent)
-                }
-                .clipShape(RoundedRectangle(cornerRadius: 47.33))
+                // top screen--depends
+                topScreen
+                .clipShape(RoundedRectangle(cornerRadius: 51))
                 .offset(x: ltrOffset)
                 .offset(x: rtlOffset)
                 .gesture(handleLtrDrag(size: size,
