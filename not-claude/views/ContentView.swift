@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-enum TopScreenViews {
+enum TopViews {
     case chat
     case test
 }
 
 struct ContentView: View {
-    @State private var topView: TopScreenViews = .chat
+    @State private var topView: TopViews = .chat
     
     @ViewBuilder
     private var topScreen: some View {
@@ -40,11 +40,6 @@ struct ContentView: View {
     @State private var rtlOffset: CGFloat = 0 // handle right to left drags
     @State private var lastOffset: CGFloat = 0
     
-    
-    // animation constants
-    private let duration: Double = 0.4
-    private let extraBounce: Double = 0
-    
     var body: some View {
         GeometryReader { proxy in
             let size: CGSize = proxy.size
@@ -56,7 +51,9 @@ struct ContentView: View {
          //       AppColors.backgroundSecondary.ignoresSafeArea()
                 
                 // bottom screen--is alwats SidebarView()
-                SidebarView(topView: $topView)
+                SidebarView(topView: $topView,
+                            ltrOffset: $ltrOffset,
+                            lastOffset: $lastOffset)
                     .frame(width: bottomViewWidth)
                     .gesture(handleRtlDrag(size: size,
                                            slideThreshold: slideThreshold,
@@ -93,14 +90,14 @@ struct ContentView: View {
             .onEnded { value in
                 if value.translation.width > slideThreshold {
                     print("[ltr] threshold paased")
-                    withAnimation(.snappy(duration: duration, extraBounce: extraBounce)) {
+                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         ltrOffset = bottomViewWidth // offset top screen
                         lastOffset = ltrOffset // store
                     }
                     haptic(.medium)
                 } else if !isTopOffset { // if top screen is not already offset
                     print("[ltr] threshold not passed")
-                    withAnimation(.snappy(duration: duration, extraBounce: extraBounce)) {
+                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         ltrOffset = 0
                     }
                 }
@@ -122,7 +119,7 @@ struct ContentView: View {
             }
             .onEnded { value in
                 if abs(value.translation.width) > slideThreshold {
-                    withAnimation(.snappy(duration: duration, extraBounce: extraBounce)) {
+                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         ltrOffset = 0
                         rtlOffset = 0
                         lastOffset = 0
@@ -130,7 +127,7 @@ struct ContentView: View {
                     haptic(.medium)
                     print("[rtl] threshold passed")
                 } else {
-                    withAnimation(.snappy(duration: duration, extraBounce: extraBounce)) {
+                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         rtlOffset = 0
                     }
                 }
@@ -142,7 +139,7 @@ struct ContentView: View {
      */
     private func handleTap(isTopOffset: Bool) {
         if isTopOffset {
-            withAnimation(.snappy(duration: duration, extraBounce: extraBounce)) {
+            withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                 ltrOffset = 0
                 lastOffset = 0
             }

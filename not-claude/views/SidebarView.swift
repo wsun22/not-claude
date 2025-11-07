@@ -9,7 +9,9 @@ import Foundation
 import SwiftUI
 
 struct SidebarView: View {
-    @Binding var topView: TopScreenViews
+    @Binding var topView: TopViews
+    @Binding var ltrOffset: CGFloat
+    @Binding var lastOffset: CGFloat
     
     var body: some View {
         ZStack {
@@ -19,11 +21,22 @@ struct SidebarView: View {
             VStack {
                 Button {
                     topView = .chat
+                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
+                        ltrOffset = 0
+                        lastOffset = 0
+                    }
+                    haptic(.medium)
                 } label: {
                     Text("tap for chat view")
                 }
+                
                 Button {
                     topView = .test
+                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
+                        ltrOffset = 0
+                        lastOffset = 0
+                    }
+                    haptic(.medium)
                 } label: {
                     Text("tap for test screen")
                 }
