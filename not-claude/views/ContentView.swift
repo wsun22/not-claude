@@ -27,13 +27,12 @@ struct ContentView: View {
                         .foregroundStyle(AppColors.accent)
 
                     Text("How can I help you this afternoon?")
-                        .font(.tienne(fontStyle: .title, fontWeight: .bold))
-                        .foregroundStyle(AppColors.textPrimary)
-                    
+                        .font(.tienne(fontStyle: .title, fontWeight: .regular))
+                        .foregroundStyle(AppColors.textTertiary)
                     
                     Text("Claude's UI font choices")
                         .font(.styreneB(fontStyle: .headline, fontWeight: .regular))
-                        .foregroundStyle(AppColors.textPrimary)
+                        .foregroundStyle(AppColors.textSecondary)
                     
                     Text("Claude's UI font choices")
                         .font(.styreneB(fontStyle: .headline, fontWeight: .medium))
@@ -57,7 +56,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { proxy in
             let size: CGSize = proxy.size
-            let slideThreshold: CGFloat = size.width * 0.4
+            let slideThreshold: CGFloat = size.width * 0.3
             let bottomViewWidth: CGFloat = size.width * 0.85
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
@@ -79,7 +78,7 @@ struct ContentView: View {
                     .cornerRadius(45)
                     .overlay(
                         RoundedRectangle(cornerRadius: 45)
-                            .stroke(.white, lineWidth: ltrOffset == 0 ? 0 : 0.25)
+                            .stroke(AppColors.textTertiary, lineWidth: ltrOffset == 0 ? 0 : 0.25)
                     )
                     .offset(x: ltrOffset)
                     .offset(x: rtlOffset)

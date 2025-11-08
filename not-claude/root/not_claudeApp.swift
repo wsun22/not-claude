@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct not_claudeApp: App {
+    @StateObject private var supabase = SupabaseManager.shared
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(supabase)
         }
     }
 }

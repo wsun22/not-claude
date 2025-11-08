@@ -69,3 +69,4 @@ playground.xcworkspace
 *.tmp
 *.bak
 
+not-claude.xcodeproj/project.xcworkspace/xcuserdata/
