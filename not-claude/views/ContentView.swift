@@ -30,11 +30,15 @@ struct ContentView: View {
                         .font(.tienne(fontStyle: .title, fontWeight: .bold))
                         .foregroundStyle(AppColors.textPrimary)
                     
+                    
                     Text("Claude's UI font choices")
-                        .font(.styreneB(fontStyle: .headline))
+                        .font(.styreneB(fontStyle: .headline, fontWeight: .regular))
+                        .foregroundStyle(AppColors.textPrimary)
+                    
+                    Text("Claude's UI font choices")
+                        .font(.styreneB(fontStyle: .headline, fontWeight: .medium))
                         .foregroundStyle(AppColors.textPrimary)
                 }
-                
             }
         case .test:
             ZStack {

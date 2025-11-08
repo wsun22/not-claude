@@ -15,12 +15,12 @@ extension Font {
     
     // claude's words?
     static func tienne(fontStyle: Font.TextStyle = .body, fontWeight: Weight = .regular) -> Font {
-        return Font.custom(CustomFont(weight: fontWeight).rawValue, size: fontStyle.size)
+        return Font.custom(TienneFont(weight: fontWeight).rawValue, size: fontStyle.size)
     }
     
     // user text/chat names
-    static func styreneB(fontStyle: Font.TextStyle = .body) -> Font {
-        return Font.custom("StyreneB-regular", size: fontStyle.size)
+    static func styreneB(fontStyle: Font.TextStyle = .body, fontWeight: Weight = .regular) -> Font {
+        return Font.custom(StyreneBFont(weight: fontWeight).rawValue, size: fontStyle.size)
     }
 }
 
@@ -43,18 +43,30 @@ extension Font.TextStyle {
     }
 }
 
-enum CustomFont: String {
+private enum TienneFont: String {
     case regular = "Tienne-regular"
     case bold = "Tienne-bold"
     
     init(weight: Font.Weight) {
         switch weight {
-        case .regular:
-            self = .regular
-        case .bold:
-            self = .bold
-        default:
-            self = .regular
+        case .regular: self = .regular
+        case .bold: self = .bold
+        default: self = .regular
+        }
+    }
+}
+
+private enum StyreneBFont: String {
+    case regular = "StyreneB-regular"
+    case medium = "StyreneB-medium"
+    case bold = "StyreneB-bold"
+    
+    init(weight: Font.Weight) {
+        switch weight {
+        case .regular: self = .regular
+        case .medium: self = .medium
+        case .bold: self = .bold
+        default: self = .regular
         }
     }
 }
