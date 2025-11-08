@@ -79,7 +79,7 @@ struct ContentView: View {
                     .cornerRadius(45)
                     .overlay(
                         RoundedRectangle(cornerRadius: 45)
-                            .stroke(.white, lineWidth: ltrOffset == 0 ? 0 : 0.5)
+                            .stroke(.white, lineWidth: ltrOffset == 0 ? 0 : 0.25)
                     )
                     .offset(x: ltrOffset)
                     .offset(x: rtlOffset)

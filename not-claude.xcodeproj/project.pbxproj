@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		182FE45D2EBFEAA900FBCB90 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 182FE45C2EBFEAA900FBCB90 /* Supabase */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		189B5A1E2EBABDEB00A35852 /* not-claude.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "not-claude.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				182FE45D2EBFEAA900FBCB90 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = "not-claude";
 			packageProductDependencies = (
+				182FE45C2EBFEAA900FBCB90 /* Supabase */,
 			);
 			productName = "not-claude";
 			productReference = 189B5A1E2EBABDEB00A35852 /* not-claude.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 189B5A152EBABDEB00A35852;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				182FE45B2EBFEAA900FBCB90 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 189B5A1F2EBABDEB00A35852 /* Products */;
 			projectDirPath = "";
@@ -347,6 +356,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		182FE45B2EBFEAA900FBCB90 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		182FE45C2EBFEAA900FBCB90 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 182FE45B2EBFEAA900FBCB90 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 189B5A162EBABDEB00A35852 /* Project object */;
 }
