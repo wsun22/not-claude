@@ -26,9 +26,10 @@ struct ContentView: View {
                     Image(systemName: "globe")
                         .foregroundStyle(AppColors.accent)
                     
-                    Text("How can I help you this afternoon?")
-                        .font(.tienne(fontStyle: .title, fontWeight: .regular))
-                        .foregroundStyle(AppColors.textTertiary)
+                    Tienne("How can I help you this afternoon?",
+                           fontStyle: .title,
+                           fontWeight: .regular,
+                           foregroundStyle: AppColors.textTertiary)
                     
                     Text("Claude's UI font choices and stuff")
                         .font(.styreneB(fontStyle: .headline, fontWeight: .regular))
