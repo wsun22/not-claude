@@ -26,7 +26,7 @@ struct ContentView: View {
                     Image(systemName: "globe")
                         .foregroundStyle(AppColors.accent)
                     
-                    Tienne("How can I help you this afternoon?",
+                    tienne("How can I help you this afternoon?",
                            fontStyle: .title,
                            fontWeight: .regular,
                            foregroundStyle: AppColors.textTertiary)
@@ -79,7 +79,7 @@ struct ContentView: View {
                     .cornerRadius(45)
                     .overlay(
                         RoundedRectangle(cornerRadius: 45)
-                            .stroke(AppColors.textTertiary, lineWidth: ltrOffset == 0 ? 0 : 0.25)
+                            .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.25)
                     )
                     .offset(x: ltrOffset)
                     .offset(x: rtlOffset)

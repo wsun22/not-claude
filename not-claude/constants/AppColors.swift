@@ -17,6 +17,7 @@ enum AppColors {
     static let textSecondary = Color("textSecondary")
     static let textTertiary = Color("textTertiary")
     
-    // accent
+    // misc
     static let accent = Color("accent")
+    static let outline = Color("textTertiary")
 }

@@ -157,10 +157,10 @@ private enum StyreneBFont: String {
 ///
 /// - Example:
 /// ```swift
-/// Styrene("Username", fontWeight: .medium)
-/// Styrene("Message content", tracking: -0.5)
+/// styrene("Username", fontWeight: .medium)
+/// styrene("Message content", tracking: -0.5)
 /// ```
-func Styrene(_ text: String,
+func styrene(_ text: String,
              fontStyle: Font.TextStyle = .body,
              fontWeight: Font.Weight = .regular,
              foregroundStyle: Color = AppColors.textPrimary,
@@ -188,10 +188,10 @@ func Styrene(_ text: String,
 ///
 /// - Example:
 /// ```swift
-/// Tienne("AI response text")
-/// Tienne("Section heading", fontStyle: .headline, fontWeight: .bold)
+/// tienne("AI response text")
+/// tienne("Section heading", fontStyle: .headline, fontWeight: .bold)
 /// ```
-func Tienne(_ text: String,
+func tienne(_ text: String,
             fontStyle: Font.TextStyle = .body,
             fontWeight: Font.Weight = .regular,
             foregroundStyle: Color = AppColors.textPrimary,
