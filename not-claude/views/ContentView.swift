@@ -25,16 +25,16 @@ struct ContentView: View {
                 VStack(spacing: 16) {
                     Image(systemName: "globe")
                         .foregroundStyle(AppColors.accent)
-
+                    
                     Text("How can I help you this afternoon?")
                         .font(.tienne(fontStyle: .title, fontWeight: .regular))
                         .foregroundStyle(AppColors.textTertiary)
                     
-                    Text("Claude's UI font choices")
+                    Text("Claude's UI font choices and stuff")
                         .font(.styreneB(fontStyle: .headline, fontWeight: .regular))
                         .foregroundStyle(AppColors.textSecondary)
                     
-                    Text("Claude's UI font choices")
+                    Text("Claude's UI font choices and stuff")
                         .font(.styreneB(fontStyle: .headline, fontWeight: .medium))
                         .foregroundStyle(AppColors.textPrimary)
                 }
