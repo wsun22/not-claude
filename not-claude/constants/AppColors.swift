@@ -5,7 +5,6 @@
 //  Created by William Sun on 11/4/25.
 //
 
-import Foundation
 import SwiftUI
 
 enum AppColors {
@@ -18,6 +17,7 @@ enum AppColors {
     static let textSecondary = Color("textSecondary")
     static let textTertiary = Color("textTertiary")
     
-    // accent
+    // misc
     static let accent = Color("accent")
+    static let outline = Color("textTertiary")
 }
