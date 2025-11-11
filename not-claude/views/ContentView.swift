@@ -31,13 +31,7 @@ struct ContentView: View {
                            fontWeight: .regular,
                            foregroundStyle: AppColors.textTertiary)
                     
-                    Text("Claude's UI font choices and stuff")
-                        .font(.styreneB(fontStyle: .headline, fontWeight: .regular))
-                        .foregroundStyle(AppColors.textSecondary)
-                    
-                    Text("Claude's UI font choices and stuff")
-                        .font(.styreneB(fontStyle: .headline, fontWeight: .medium))
-                        .foregroundStyle(AppColors.textPrimary)
+                    styrene("Claude's UI font choices and stuff", fontStyle: .headline, fontWeight: .regular, foregroundStyle: AppColors.textSecondary)
                 }
             }
         case .test:
