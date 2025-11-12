@@ -8,7 +8,7 @@
 import Foundation
 import AuthenticationServices
 
-class AppleSignInManager: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+final class AppleSignInManager: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     static let shared = AppleSignInManager()
     
     var nonce: String?
@@ -25,7 +25,11 @@ class AppleSignInManager: NSObject, ASAuthorizationControllerDelegate, ASAuthori
         
         print("Token: \(tokenString)")
         print("Nonce: \(nonce)")
-        // Call supabaseManager here
+        
+        Task {
+            await SupabaseManager.shared.handleAppleSignIn(idToken: tokenString, nonce: nonce)
+        }
+       
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
