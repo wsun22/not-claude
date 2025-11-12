@@ -9,13 +9,16 @@ import SwiftUI
 
 @main
 struct not_claudeApp: App {
-    @StateObject private var supabase = SupabaseManager.shared
+    @StateObject private var supabaseManager = SupabaseManager.shared
     
     var body: some Scene {
         WindowGroup {
-            //ContentView()
-            AuthView()
-                .environmentObject(supabase)
+            if supabaseManager.currentUser != nil {
+                ContentView()
+            } else {
+                AuthView()
+            }
         }
+        .environmentObject(supabaseManager)
     }
 }

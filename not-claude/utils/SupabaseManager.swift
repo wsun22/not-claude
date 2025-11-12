@@ -14,9 +14,20 @@ final class SupabaseManager: ObservableObject {
     static let shared = SupabaseManager()
     private let client: SupabaseClient
     
+    @Published var currentUser: User?
+    @Published var isLoading: Bool = false
+    
     private init() {
         client = SupabaseClient(supabaseURL: URL(string: "https://ipamulxprbpujyspawun.supabase.co")!,
-                                                 supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwYW11bHhwcmJwdWp5c3Bhd3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1OTY0NTgsImV4cCI6MjA3ODE3MjQ1OH0.sXi-dwt3H-SpquLQQcg3GSCZYWEQTfkddZs835jeHGE")
+                                supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwYW11bHhwcmJwdWp5c3Bhd3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1OTY0NTgsImV4cCI6MjA3ODE3MjQ1OH0.sXi-dwt3H-SpquLQQcg3GSCZYWEQTfkddZs835jeHGE")
+        
+        Task {
+            for await state in client.auth.authStateChanges {
+                await MainActor.run {
+                    currentUser = state.session?.user
+                }
+            }
+        }
     }
     
     func handleAppleSignIn(idToken: String,
@@ -58,5 +69,9 @@ final class SupabaseManager: ObservableObject {
         } catch {
             print("[SupabaseManager] Sign in failed: \(error)")
         }
+    }
+    
+    func signOut() async {
+        try? await client.auth.signOut()
     }
 }
