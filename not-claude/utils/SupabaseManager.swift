@@ -12,15 +12,17 @@ import AuthenticationServices
 
 final class SupabaseManager: ObservableObject {
     static let shared = SupabaseManager()
-    private let client: SupabaseClient
+    private let client: SupabaseClient = SupabaseClient(supabaseURL: URL(string: "https://ipamulxprbpujyspawun.supabase.co")!,
+                                                        supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwYW11bHhwcmJwdWp5c3Bhd3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1OTY0NTgsImV4cCI6MjA3ODE3MjQ1OH0.sXi-dwt3H-SpquLQQcg3GSCZYWEQTfkddZs835jeHGE",
+                                                        options: SupabaseClientOptions(
+                                                            auth: SupabaseClientOptions.AuthOptions(emitLocalSessionAsInitialSession: true)
+                                                        )
+    )
     
     @Published var currentUser: User?
     @Published var isCheckingAuth: Bool = true
     
     private init() {
-        client = SupabaseClient(supabaseURL: URL(string: "https://ipamulxprbpujyspawun.supabase.co")!,
-                                supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwYW11bHhwcmJwdWp5c3Bhd3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1OTY0NTgsImV4cCI6MjA3ODE3MjQ1OH0.sXi-dwt3H-SpquLQQcg3GSCZYWEQTfkddZs835jeHGE")
-        
         observeAuthStateChanges()
     }
     
@@ -28,14 +30,20 @@ final class SupabaseManager: ObservableObject {
         Task {
             for await state in client.auth.authStateChanges {
                 await MainActor.run {
-                    currentUser = state.session?.user
+                    if let session = state.session, !session.isExpired {
+                        currentUser = session.user
+                    } else {
+                        currentUser = nil
+                    }
                     isCheckingAuth = false
                 }
             }
         }
     }
     
-    func handleAppleSignIn(idToken: String, nonce: String, credential: ASAuthorizationAppleIDCredential) async {
+    func handleAppleSignIn(idToken: String,
+                           nonce: String,
+                           credential: ASAuthorizationAppleIDCredential) async {
         do {
             try await client.auth.signInWithIdToken(
                 credentials: .init(

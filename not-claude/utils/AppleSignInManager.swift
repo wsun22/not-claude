@@ -12,7 +12,7 @@ import AuthenticationServices
 /// Manages Sign in with Apple authentication flow. Created for full control over SignInWithApple button styling.
 /// This singleton handles the Apple ID authorization process and delegates the result to SupabaseManager.
 final class AppleSignInManager: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
-    
+  
     // MARK: - Singleton
 
     static let shared = AppleSignInManager()
@@ -32,7 +32,6 @@ final class AppleSignInManager: NSObject, ObservableObject, ASAuthorizationContr
     
     /// Private initializer to enforce singleton pattern.
     override private init() {}
-    
     
     // MARK: - ASAuthorizationControllerDelegate
     
