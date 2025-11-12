@@ -13,6 +13,8 @@ struct SidebarView: View {
     @Binding var ltrOffset: CGFloat
     @Binding var lastOffset: CGFloat
     
+    @EnvironmentObject var supabaseManager: SupabaseManager
+    
     var body: some View {
         ZStack {
             //Color.white.ignoresSafeArea()
@@ -40,7 +42,6 @@ struct SidebarView: View {
                 } label: {
                     Text("tap for test screen")
                 }
-
             }
         }
     }

@@ -13,10 +13,12 @@ struct not_claudeApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if supabaseManager.currentUser != nil {
-                ContentView()
+            if supabaseManager.isCheckingAuth {
+                ContentView() // show splash screen
+            } else if supabaseManager.currentUser != nil {
+                ContentView() // user is signed in
             } else {
-                AuthView()
+                AuthView() // not signed in
             }
         }
         .environmentObject(supabaseManager)

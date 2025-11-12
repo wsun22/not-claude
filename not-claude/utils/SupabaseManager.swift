@@ -15,24 +15,27 @@ final class SupabaseManager: ObservableObject {
     private let client: SupabaseClient
     
     @Published var currentUser: User?
-    @Published var isLoading: Bool = false
+    @Published var isCheckingAuth: Bool = true
     
     private init() {
         client = SupabaseClient(supabaseURL: URL(string: "https://ipamulxprbpujyspawun.supabase.co")!,
                                 supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwYW11bHhwcmJwdWp5c3Bhd3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1OTY0NTgsImV4cCI6MjA3ODE3MjQ1OH0.sXi-dwt3H-SpquLQQcg3GSCZYWEQTfkddZs835jeHGE")
         
+        observeAuthStateChanges()
+    }
+    
+    private func observeAuthStateChanges() {
         Task {
             for await state in client.auth.authStateChanges {
                 await MainActor.run {
                     currentUser = state.session?.user
+                    isCheckingAuth = false
                 }
             }
         }
     }
     
-    func handleAppleSignIn(idToken: String,
-                           nonce: String,
-                           credential: ASAuthorizationAppleIDCredential) async {
+    func handleAppleSignIn(idToken: String, nonce: String, credential: ASAuthorizationAppleIDCredential) async {
         do {
             try await client.auth.signInWithIdToken(
                 credentials: .init(
