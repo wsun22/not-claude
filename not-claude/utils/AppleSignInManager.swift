@@ -30,7 +30,9 @@ final class AppleSignInManager: NSObject, ObservableObject, ASAuthorizationContr
         print("Nonce: \(nonce)")
         
         Task {
-            await SupabaseManager.shared.handleAppleSignIn(idToken: tokenString, nonce: nonce)
+            await SupabaseManager.shared.handleAppleSignIn(idToken: tokenString,
+                                                           nonce: nonce,
+                                                           credential: credential)
         }
     }
     
