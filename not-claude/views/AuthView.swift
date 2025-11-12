@@ -11,9 +11,7 @@ import AuthenticationServices
 import CryptoKit
 
 struct AuthView: View {
-    @State private var isLoading: Bool = false
-    @State private var errorMessage: String?
-    
+    @StateObject private var signInManager = AppleSignInManager.shared
     @EnvironmentObject var supabaseManager: SupabaseManager
     
     var body: some View {
@@ -34,6 +32,12 @@ struct AuthView: View {
                     .frame(height: 55)
                     .background(Color.white)
                     .cornerRadius(20)
+                    .disabled(signInManager.isLoading)
+                }
+                
+                if signInManager.isLoading {
+                    Text("loading!!")
+                        .foregroundStyle(.white)
                 }
             }
             .padding(16)
@@ -41,6 +45,7 @@ struct AuthView: View {
     }
     
     private func handleSignInWithApple() {
+        signInManager.isLoading = true
         haptic()
         let nonce = randomNonceString()
         

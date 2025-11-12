@@ -5,15 +5,18 @@
 //  Created by William Sun on 11/12/25.
 //
 
+import Combine
 import Foundation
 import AuthenticationServices
 
-final class AppleSignInManager: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+final class AppleSignInManager: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     static let shared = AppleSignInManager()
     
+    @Published var isLoading: Bool = false
     var nonce: String?
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        defer { isLoading = false }
         print("Authorization succeeded")
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
               let identityToken = credential.identityToken,
@@ -29,10 +32,10 @@ final class AppleSignInManager: NSObject, ASAuthorizationControllerDelegate, ASA
         Task {
             await SupabaseManager.shared.handleAppleSignIn(idToken: tokenString, nonce: nonce)
         }
-       
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        defer { isLoading = false }
         print("Authorization failed: \(error.localizedDescription)")
     }
     
