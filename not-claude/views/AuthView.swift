@@ -47,6 +47,7 @@ struct AuthView: View {
     private func handleSignInWithApple() {
         signInManager.isLoading = true
         haptic()
+        
         let nonce = randomNonceString()
         
         let provider = ASAuthorizationAppleIDProvider()

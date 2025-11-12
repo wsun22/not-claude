@@ -15,6 +15,8 @@ final class AppleSignInManager: NSObject, ObservableObject, ASAuthorizationContr
     @Published var isLoading: Bool = false
     var nonce: String?
     
+    override private init() {}
+    
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         defer { isLoading = false }
         print("Authorization succeeded")
