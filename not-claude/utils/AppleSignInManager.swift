@@ -1,0 +1,42 @@
+//
+//  AppleSignInManager.swift
+//  not-claude
+//
+//  Created by William Sun on 11/12/25.
+//
+
+import Foundation
+import AuthenticationServices
+
+class AppleSignInManager: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+    static let shared = AppleSignInManager()
+    
+    var nonce: String?
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        print("Authorization succeeded")
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let identityToken = credential.identityToken,
+              let tokenString = String(data: identityToken, encoding: .utf8),
+              let nonce = self.nonce else {
+            print("Unable to get credentials")
+            return
+        }
+        
+        print("Token: \(tokenString)")
+        print("Nonce: \(nonce)")
+        // Call supabaseManager here
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        print("Authorization failed: \(error.localizedDescription)")
+    }
+    
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else {
+            fatalError("No window available")
+        }
+        return window
+    }
+}

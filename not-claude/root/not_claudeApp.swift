@@ -13,7 +13,8 @@ struct not_claudeApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            //ContentView()
+            AuthView()
                 .environmentObject(supabase)
         }
     }
