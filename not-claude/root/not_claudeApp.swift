@@ -14,7 +14,7 @@ struct not_claudeApp: App {
     var body: some Scene {
         WindowGroup {
             if supabaseManager.isCheckingAuth {
-                ContentView() // show splash screen
+                SplashView() // show splash screen
             } else if supabaseManager.currentUser != nil {
                 ContentView() // user is signed in
             } else {
