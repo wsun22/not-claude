@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ChatView: View {
+    @State var userContent: String = ""
     
     var body: some View {
         ZStack {
@@ -22,8 +23,58 @@ struct ChatView: View {
                        fontWeight: .regular,
                        foregroundStyle: AppColors.textTertiary)
                 
-                styrene("Claude's UI font choices and stuff", fontStyle: .headline, fontWeight: .regular, foregroundStyle: AppColors.textSecondary)
+                
+                VStack(spacing: 16) {
+//                    ZStack(alignment: .leading) {
+//                        if userContent.isEmpty {
+//                            styrene("Chat with Claude", fontStyle: .headline, foregroundStyle: AppColors.textTertiary)
+//                        }
+//                        
+//                        TextField("hello", text: $userContent)
+//                            .font(.styreneB(fontStyle: .body))
+//                            .foregroundStyle(AppColors.textPrimary)
+//                        //          .border(.red, width: 1)
+//                        
+//                    }
+                    
+                    TextField("Chat with Claude", text: $userContent)
+                        .font(.styreneB(fontStyle: .headline))
+                        .foregroundStyle(AppColors.textPrimary)
+                        .tint(AppColors.textTertiary) // control cursor color
+                                        
+                    HStack {
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: "plus")
+                                .foregroundStyle(AppColors.textPrimary)
+                                .font(.title3)
+                        }
+                        
+                        Spacer()
+                        
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: "arrow.up")
+                                .foregroundStyle(AppColors.textPrimary)
+                                .padding(8)
+                                .background(
+                                    Circle()
+                                        .fill(AppColors.accent)
+                                )
+                        }
+                    }
+                }
+                .padding(.horizontal, 8)
+                .padding(.top, 16)
+                .padding(.bottom, 8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(AppColors.outline, lineWidth: 1)
+                )
             }
+            .padding(16)
         }
     }
 }
