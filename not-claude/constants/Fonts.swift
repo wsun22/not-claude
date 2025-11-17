@@ -164,7 +164,7 @@ func styrene(_ text: String,
              fontStyle: Font.TextStyle = .body,
              fontWeight: Font.Weight = .regular,
              foregroundStyle: Color = AppColors.textPrimary,
-             tracking: CGFloat = -0.75) -> some View {
+             tracking: CGFloat = -0.85) -> some View {
     return Text(text)
         .font(.styreneB(fontStyle: fontStyle, fontWeight: fontWeight))
         .foregroundStyle(foregroundStyle)
@@ -195,7 +195,7 @@ func tienne(_ text: String,
             fontStyle: Font.TextStyle = .body,
             fontWeight: Font.Weight = .regular,
             foregroundStyle: Color = AppColors.textPrimary,
-            tracking: CGFloat = -0.75) -> some View {
+            tracking: CGFloat = -0.85) -> some View {
     return Text(text)
         .font(.tienne(fontStyle: fontStyle, fontWeight: fontWeight))
         .foregroundStyle(foregroundStyle)

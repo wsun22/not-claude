@@ -18,29 +18,47 @@ struct AuthView: View {
         ZStack {
             AppColors.backgroundPrimary.ignoresSafeArea()
             
-            VStack {
-                Button(action: handleSignInWithApple) {
-                    HStack {
-                        Image(systemName: "applelogo")
-                            .offset(y: -2)
-                        
-                        Text("Continue with Apple")
-                            .font(.styreneB(fontWeight: .medium))
-                    }
-                    .foregroundColor(.black)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 55)
-                    .background(Color.white)
-                    .cornerRadius(20)
-                    .disabled(signInManager.isLoading)
-                }
+            VStack(alignment: .center, spacing: 16) {
+                tienne("notClaude", fontStyle: .title, fontWeight: .bold)
+                
+                tienne("Do your best work with notClaude", fontStyle: .title2, foregroundStyle: .textSecondary)
+                
+                SignInButton(text: "Continue with Apple",
+                             systemName: "applelogo",
+                             action: handleSignInWithApple)
                 
                 if signInManager.isLoading {
                     Text("loading!!")
                         .foregroundStyle(.white)
                 }
             }
-            .padding(16)
+            .padding(.horizontal, 16)
+        }
+    }
+    
+    private struct SignInButton: View {
+        let text: String
+        let systemName: String
+        let action: () -> Void
+        
+        var body: some View {
+            Button(action: action) {
+                HStack {
+                    Image(systemName: systemName)
+                        .foregroundStyle(.black)
+                        .offset(y: -2)
+
+                    
+                    styrene(text,
+                            fontStyle: .headline,
+                            fontWeight: .medium,
+                            foregroundStyle: .black)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 55)
+            .background(.white)
+            .cornerRadius(25)
         }
     }
     
