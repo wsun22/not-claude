@@ -42,6 +42,14 @@ struct SidebarView: View {
                 } label: {
                     Text("tap for test screen")
                 }
+                
+                Button {
+                    Task {
+                        await supabaseManager.signOut()
+                    }
+                } label: {
+                    Text("sign out")
+                }
             }
         }
     }
