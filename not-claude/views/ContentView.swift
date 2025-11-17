@@ -52,7 +52,11 @@ struct ContentView: View {
                                            slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth))
                 
-                // top screen--depends
+                // top screen
+                // need to separate background from actual content, because background needs to ignore safe area while
+                // content respects it
+                // view modifiers, such as swipe gesture handling/corner rounding still apply to the z stack
+                // thus, individual views dont need to handle background (helpful for dev still)
                 ZStack {
                     AppColors.backgroundPrimary.ignoresSafeArea()
                     
