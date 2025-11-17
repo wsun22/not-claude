@@ -34,14 +34,14 @@ struct ContentView: View {
     @State private var lastOffset: CGFloat = 0
     
     var body: some View {
-        GeometryReader { proxy in
-            let size: CGSize = proxy.size
+        GeometryReader { geometry in
+            let size: CGSize = geometry.size
             let slideThreshold: CGFloat = size.width * 0.3
             let bottomViewWidth: CGFloat = size.width * 0.85
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
-                AppColors.backgroundSecondary.ignoresSafeArea() // this is bc the rhs background of sidebarview is cut off by the frame width. can this be avoided?
+                AppColors.backgroundSecondary.ignoresSafeArea()
                 
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
@@ -53,19 +53,24 @@ struct ContentView: View {
                                            bottomViewWidth: bottomViewWidth))
                 
                 // top screen--depends
-                topScreen
-               //    .clipShape(RoundedRectangle(cornerRadius: 51)) // clipshape or cornerRadius ?
-                    .cornerRadius(45)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 45)
-                            .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.25)
-                    )
-                    .offset(x: ltrOffset)
-                    .offset(x: rtlOffset)
-                    .gesture(handleLtrDrag(size: size,
-                                           slideThreshold: slideThreshold,
-                                           bottomViewWidth: bottomViewWidth,
-                                           isTopOffset: isTopOffset))
+                ZStack {
+                    AppColors.backgroundPrimary.ignoresSafeArea()
+                    
+                    topScreen
+                        .padding(.top, geometry.safeAreaInsets.top)
+                        .padding(.bottom, geometry.safeAreaInsets.bottom)
+                }
+                .cornerRadius(45)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 45)
+                        .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.25)
+                )
+                .offset(x: ltrOffset)
+                .offset(x: rtlOffset)
+                .gesture(handleLtrDrag(size: size,
+                                       slideThreshold: slideThreshold,
+                                       bottomViewWidth: bottomViewWidth,
+                                       isTopOffset: isTopOffset))
                 .onTapGesture { handleTap(isTopOffset: isTopOffset) }
             }
             .ignoresSafeArea()
@@ -147,6 +152,6 @@ struct ContentView: View {
     }
 }
 
-//#Preview {
-//    ContentView()
-//}
+#Preview {
+    ContentView()
+}
