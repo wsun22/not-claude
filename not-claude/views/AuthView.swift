@@ -21,7 +21,9 @@ struct AuthView: View {
             VStack(alignment: .center, spacing: 16) {
                 tienne("notClaude", fontStyle: .title, fontWeight: .bold)
                 
-                tienne("Do your best work with notClaude", fontStyle: .title2, foregroundStyle: .textSecondary)
+                tienne("Do your best work with notClaude",
+                       fontStyle: .title2,
+                       foregroundStyle: .textSecondary)
                 
                 SignInButton(text: "Continue with Apple",
                              systemName: "applelogo",
