@@ -51,7 +51,6 @@ struct ContentView: View {
                 .gesture(handleRtlDrag(size: size,
                                        slideThreshold: slideThreshold,
                                        bottomViewWidth: bottomViewWidth))
-                .onAppear { print("hi") }
  
                 topScreen
                     .padding(.top, geo.safeAreaInsets.top) // let content respect safe area

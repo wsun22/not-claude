@@ -17,8 +17,7 @@ struct SidebarView: View {
     
     var body: some View {
         ZStack {
-            //Color.white.ignoresSafeArea()
-       //     AppColors.backgroundSecondary.ignoresSafeArea()
+            AppColors.backgroundSecondary.ignoresSafeArea()
             
             VStack {
                 Button {
