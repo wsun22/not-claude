@@ -70,11 +70,6 @@ struct ContentView: View {
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
                     .onTapGesture { handleTap(isTopOffset: isTopOffset) }
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            isInputFocused = true
-                        }
-                    }
             }
             .ignoresSafeArea()
         }
@@ -99,7 +94,7 @@ struct ContentView: View {
                     withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         ltrOffset = bottomViewWidth // offset top screen
                         lastOffset = ltrOffset // store
-                        isInputFocused = false
+                        isInputFocused = false // dismiss keyboard
                     }
                     haptic(.medium)
                 } else if !isTopOffset { // if top screen is not already offset

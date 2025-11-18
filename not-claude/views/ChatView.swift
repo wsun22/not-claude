@@ -34,9 +34,15 @@ struct ChatView: View {
             .safeAreaInset(edge: .bottom) {
                 InputSection(userInput: $userInput, isInputFocused: $isInputFocused)
                     .padding(.horizontal, 12)
+                    .padding(.bottom, isInputFocused ? 12 : 0)
             }
             .onTapGesture {
                 isInputFocused = false
+            }
+            .onAppear { // open keyboard
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isInputFocused = true
+                }
             }
         }
     }
@@ -48,14 +54,14 @@ private struct InputSection: View {
     
     var body: some View {
         VStack(spacing: 8) {            
-            TextField("Chat with Claude", text: $userInput)
+            TextField("Chat with Claude", text: $userInput, axis: .vertical)
                 .font(.styreneB(fontStyle: .headline))
                 .foregroundStyle(AppColors.textPrimary)
                 .tracking(-0.85)
                 .tint(AppColors.textTertiary) // control cursor color
                 .focused($isInputFocused)
                 .padding(.vertical, 12)
-                                
+                .lineLimit(5)
             HStack {
                 Button {
                     
@@ -95,6 +101,8 @@ private struct InputSection: View {
     }
 }
 
-//#Preview {
-//    ChatView(isInputFocused: )
-//}
+#Preview {
+    @FocusState var isInputFocused
+    
+    ChatView(isInputFocused: $isInputFocused)
+}
