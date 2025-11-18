@@ -37,11 +37,13 @@ struct Message {
     }
 }
 
-class MessageViewModel: ObservableObject {
+final class MessageViewModel: ObservableObject {
     @Published var messages: [Message] = []
     @Published var isTyping: Bool = false
     
+    let user = SupabaseManager.shared.currentUser
+    
     init() {
-        
+        // fetch messages based on user
     }
 }
