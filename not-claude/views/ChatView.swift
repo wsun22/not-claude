@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct ChatView: View {
-    @State var userContent: String = ""
+    @State var userInput: String = ""
     
     var body: some View {
+        GeometryReader { geo in 
             ZStack {
                 AppColors.backgroundPrimary.ignoresSafeArea()
                 
@@ -22,39 +23,39 @@ struct ChatView: View {
                            fontStyle: .title,
                            fontWeight: .regular,
                            foregroundStyle: AppColors.textTertiary)
+                    .multilineTextAlignment(.center)
                 }
-                .padding(.horizontal, 16)
             }
             .safeAreaInset(edge: .top) {
                 Text("hi")
                     .foregroundStyle(.white)
             }
             .safeAreaInset(edge: .bottom) {
-                InputSection(userContent: $userContent)
+                InputSection(userInput: $userInput)
                     .padding(.horizontal, 12)
             }
-        
+        }
     }
 }
 
 private struct InputSection: View {
-    @Binding var userContent: String
+    @Binding var userInput: String
     
     var body: some View {
         VStack(spacing: 16) {
 //                    ZStack(alignment: .leading) {
-//                        if userContent.isEmpty {
+//                        if userInput.isEmpty {
 //                            styrene("Chat with Claude", fontStyle: .headline, foregroundStyle: AppColors.textTertiary)
 //                        }
 //
-//                        TextField("hello", text: $userContent)
+//                        TextField("hello", text: $userInput)
 //                            .font(.styreneB(fontStyle: .body))
 //                            .foregroundStyle(AppColors.textPrimary)
 //                        //          .border(.red, width: 1)
 //
 //                    }
             
-            TextField("Chat with Claude", text: $userContent)
+            TextField("Chat with Claude", text: $userInput)
                 .font(.styreneB(fontStyle: .headline))
                 .foregroundStyle(AppColors.textPrimary)
                 .tint(AppColors.textTertiary) // control cursor color

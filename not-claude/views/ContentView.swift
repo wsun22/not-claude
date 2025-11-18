@@ -34,8 +34,8 @@ struct ContentView: View {
     @State private var lastOffset: CGFloat = 0
     
     var body: some View {
-        GeometryReader { geometry in
-            let size: CGSize = geometry.size
+        GeometryReader { geo in
+            let size: CGSize = geo.size
             let slideThreshold: CGFloat = size.width * 0.3
             let bottomViewWidth: CGFloat = size.width * 0.85
             let isTopOffset: Bool = lastOffset == bottomViewWidth
@@ -47,42 +47,34 @@ struct ContentView: View {
                 SidebarView(topView: $topView,
                             ltrOffset: $ltrOffset,
                             lastOffset: $lastOffset)
-                    .frame(width: bottomViewWidth)
-                    .gesture(handleRtlDrag(size: size,
-                                           slideThreshold: slideThreshold,
-                                           bottomViewWidth: bottomViewWidth))
-                
-                // top screen
-                // need to separate background from actual content, because background needs to ignore safe area while
-                // content respects it
-                // view modifiers, such as swipe gesture handling/corner rounding still apply to the z stack
-                // thus, individual views dont need to handle background (helpful for dev still)
-                ZStack {
-                    AppColors.backgroundPrimary.ignoresSafeArea()
-                    
-                    topScreen
-                        .padding(.top, geometry.safeAreaInsets.top)
-                        .padding(.bottom, geometry.safeAreaInsets.bottom)
-                }
-                .cornerRadius(45)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 45)
-                        .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.25)
-                )
-                .offset(x: ltrOffset)
-                .offset(x: rtlOffset)
-                .gesture(handleLtrDrag(size: size,
+                .frame(width: bottomViewWidth)
+                .gesture(handleRtlDrag(size: size,
                                        slideThreshold: slideThreshold,
-                                       bottomViewWidth: bottomViewWidth,
-                                       isTopOffset: isTopOffset))
-                .onTapGesture { handleTap(isTopOffset: isTopOffset) }
+                                       bottomViewWidth: bottomViewWidth))
+                .onAppear { print("hi") }
+ 
+                topScreen
+                    .padding(.top, geo.safeAreaInsets.top) // let content respect safe area
+                    .padding(.bottom, geo.safeAreaInsets.bottom) // let content respect safe area
+                    .cornerRadius(45)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 45)
+                            .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.25)
+                    )
+                    .offset(x: ltrOffset)
+                    .offset(x: rtlOffset)
+                    .gesture(handleLtrDrag(size: size,
+                                           slideThreshold: slideThreshold,
+                                           bottomViewWidth: bottomViewWidth,
+                                           isTopOffset: isTopOffset))
+                    .onTapGesture { handleTap(isTopOffset: isTopOffset) }
             }
             .ignoresSafeArea()
         }
     }
     
     /*
-    handles left to right drags for the top screen
+     handles left to right drags for the top screen
      */
     private func handleLtrDrag(size: CGSize,
                                slideThreshold: CGFloat,
