@@ -85,7 +85,7 @@ struct ContentView: View {
         DragGesture()
             .onChanged { value in
                 if (value.translation.width > 0) && (ltrOffset + lastOffset < size.width) {
-                    ltrOffset = min(value.translation.width, bottomViewWidth)
+                    ltrOffset = value.translation.width
                 }
             }
             .onEnded { value in

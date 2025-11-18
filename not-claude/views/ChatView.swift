@@ -53,15 +53,16 @@ private struct InputSection: View {
     @FocusState.Binding var isInputFocused: Bool
     
     var body: some View {
-        VStack(spacing: 8) {            
+        VStack(spacing: 0) {
             TextField("Chat with Claude", text: $userInput, axis: .vertical)
                 .font(.styreneB(fontStyle: .headline))
                 .foregroundStyle(AppColors.textPrimary)
                 .tracking(-0.85)
                 .tint(AppColors.textTertiary) // control cursor color
                 .focused($isInputFocused)
-                .padding(.vertical, 12)
+                .padding(.vertical, 16)
                 .lineLimit(5)
+            
             HStack {
                 Button {
                     
@@ -86,7 +87,8 @@ private struct InputSection: View {
                 }
             }
         }
-        .padding(8)
+        .padding(.horizontal, 8)
+        .padding(.bottom, 8)
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(AppColors.outline, lineWidth: 0.15)
@@ -98,6 +100,7 @@ private struct InputSection: View {
         
         let trimmed: String = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
         userInput = ""
+        isInputFocused = false
     }
 }
 
