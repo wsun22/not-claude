@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatView: View {
     @State var userInput: String = ""
+    @FocusState.Binding var isInputFocused: Bool
     
     var body: some View {
         GeometryReader { geo in 
@@ -31,8 +32,11 @@ struct ChatView: View {
                     .foregroundStyle(.white)
             }
             .safeAreaInset(edge: .bottom) {
-                InputSection(userInput: $userInput)
+                InputSection(userInput: $userInput, isInputFocused: $isInputFocused)
                     .padding(.horizontal, 12)
+            }
+            .onTapGesture {
+                isInputFocused = false
             }
         }
     }
@@ -40,26 +44,17 @@ struct ChatView: View {
 
 private struct InputSection: View {
     @Binding var userInput: String
+    @FocusState.Binding var isInputFocused: Bool
     
     var body: some View {
-        VStack(spacing: 16) {
-//                    ZStack(alignment: .leading) {
-//                        if userInput.isEmpty {
-//                            styrene("Chat with Claude", fontStyle: .headline, foregroundStyle: AppColors.textTertiary)
-//                        }
-//
-//                        TextField("hello", text: $userInput)
-//                            .font(.styreneB(fontStyle: .body))
-//                            .foregroundStyle(AppColors.textPrimary)
-//                        //          .border(.red, width: 1)
-//
-//                    }
-            
+        VStack(spacing: 8) {            
             TextField("Chat with Claude", text: $userInput)
                 .font(.styreneB(fontStyle: .headline))
                 .foregroundStyle(AppColors.textPrimary)
                 .tracking(-0.85)
                 .tint(AppColors.textTertiary) // control cursor color
+                .focused($isInputFocused)
+                .padding(.vertical, 12)
                                 
             HStack {
                 Button {
@@ -85,9 +80,7 @@ private struct InputSection: View {
                 }
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.top, 16)
-        .padding(.bottom, 8)
+        .padding(8)
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(AppColors.outline, lineWidth: 0.15)
@@ -102,6 +95,6 @@ private struct InputSection: View {
     }
 }
 
-#Preview {
-    ChatView()
-}
+//#Preview {
+//    ChatView(isInputFocused: )
+//}

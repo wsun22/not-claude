@@ -30,11 +30,12 @@ final class SupabaseManager: ObservableObject {
         Task {
             for await state in client.auth.authStateChanges {
                 await MainActor.run {
-                    if let session = state.session, !session.isExpired {
-                        currentUser = session.user
-                    } else {
-                        currentUser = nil
-                    }
+//                    if let session = state.session, !session.isExpired {
+//                        currentUser = session.user
+//                    } else {
+//                        currentUser = nil
+//                    }
+                    currentUser = state.session?.user
                     isCheckingAuth = false
                 }
             }

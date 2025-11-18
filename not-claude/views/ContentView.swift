@@ -18,7 +18,7 @@ struct ContentView: View {
     @ViewBuilder
     private var topScreen: some View {
         switch topView {
-        case .chat: ChatView()
+        case .chat: ChatView(isInputFocused: $isInputFocused)
         case .test:
             ZStack {
                 Color.red.ignoresSafeArea()
@@ -33,6 +33,8 @@ struct ContentView: View {
     @State private var rtlOffset: CGFloat = 0 // handle right to left drags
     @State private var lastOffset: CGFloat = 0
     
+    @FocusState private var isInputFocused: Bool
+    
     var body: some View {
         GeometryReader { geo in
             let size: CGSize = geo.size
@@ -41,6 +43,8 @@ struct ContentView: View {
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
+                AppColors.backgroundSecondary.ignoresSafeArea()
+                
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
                             ltrOffset: $ltrOffset,
@@ -66,6 +70,11 @@ struct ContentView: View {
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
                     .onTapGesture { handleTap(isTopOffset: isTopOffset) }
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            isInputFocused = true
+                        }
+                    }
             }
             .ignoresSafeArea()
         }
@@ -81,7 +90,7 @@ struct ContentView: View {
         DragGesture()
             .onChanged { value in
                 if (value.translation.width > 0) && (ltrOffset + lastOffset < size.width) {
-                    ltrOffset = value.translation.width
+                    ltrOffset = min(value.translation.width, bottomViewWidth)
                 }
             }
             .onEnded { value in
@@ -90,6 +99,7 @@ struct ContentView: View {
                     withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         ltrOffset = bottomViewWidth // offset top screen
                         lastOffset = ltrOffset // store
+                        isInputFocused = false
                     }
                     haptic(.medium)
                 } else if !isTopOffset { // if top screen is not already offset
@@ -138,6 +148,7 @@ struct ContentView: View {
         if isTopOffset {
             withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                 ltrOffset = 0
+                rtlOffset = 0
                 lastOffset = 0
             }
             haptic(.medium)
