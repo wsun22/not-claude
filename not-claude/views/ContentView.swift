@@ -41,7 +41,7 @@ struct ContentView: View {
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
-                AppColors.backgroundSecondary.ignoresSafeArea()
+                AppColors.backgroundSecondary.ignoresSafeArea() // fill gap left by rounding the corner of topScreen
                 
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
@@ -58,7 +58,7 @@ struct ContentView: View {
                     .cornerRadius(45)
                     .overlay(
                         RoundedRectangle(cornerRadius: 45)
-                            .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.25)
+                            .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.15)
                     )
                     .offset(x: ltrOffset)
                     .offset(x: rtlOffset)
@@ -87,14 +87,14 @@ struct ContentView: View {
             }
             .onEnded { value in
                 if value.translation.width > slideThreshold {
-                    print("[ltr] threshold paased")
+//                    print("[ltr] threshold paased")
                     withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         ltrOffset = bottomViewWidth // offset top screen
                         lastOffset = ltrOffset // store
                     }
                     haptic(.medium)
                 } else if !isTopOffset { // if top screen is not already offset
-                    print("[ltr] threshold not passed")
+//                    print("[ltr] threshold not passed")
                     withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         ltrOffset = 0
                     }
@@ -123,7 +123,7 @@ struct ContentView: View {
                         lastOffset = 0
                     }
                     haptic(.medium)
-                    print("[rtl] threshold passed")
+//                    print("[rtl] threshold passed")
                 } else {
                     withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         rtlOffset = 0
@@ -142,7 +142,7 @@ struct ContentView: View {
                 lastOffset = 0
             }
             haptic(.medium)
-            print("Tapped")
+//            print("Tapped")
         }
     }
 }

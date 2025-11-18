@@ -58,6 +58,7 @@ private struct InputSection: View {
             TextField("Chat with Claude", text: $userInput)
                 .font(.styreneB(fontStyle: .headline))
                 .foregroundStyle(AppColors.textPrimary)
+                .tracking(-0.85)
                 .tint(AppColors.textTertiary) // control cursor color
                                 
             HStack {
@@ -72,7 +73,7 @@ private struct InputSection: View {
                 Spacer()
                 
                 Button {
-                    
+                    handleUserInput()
                 } label: {
                     Image(systemName: "arrow.up")
                         .foregroundStyle(AppColors.textPrimary)
@@ -91,6 +92,13 @@ private struct InputSection: View {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(AppColors.outline, lineWidth: 0.15)
         )
+    }
+    
+    private func handleUserInput() {
+        guard !userInput.isEmpty else { return }
+        
+        let trimmed: String = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        userInput = ""
     }
 }
 
