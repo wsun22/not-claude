@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 enum Role: String {
     case system
@@ -15,12 +16,12 @@ enum Role: String {
 }
 
 struct Message {
-    var id: UUID
-    var userId: UUID
-    var chatId: UUID
-    var role: Role
-    var content: String
-    var createdAt: Date
+    let id: UUID
+    let userId: UUID
+    let chatId: UUID
+    let role: Role
+    let content: String
+    let createdAt: Date
     
     init(id: UUID = UUID(),
          userId: UUID,
@@ -41,9 +42,13 @@ final class MessageViewModel: ObservableObject {
     @Published var messages: [Message] = []
     @Published var isTyping: Bool = false
     
-    let user = SupabaseManager.shared.currentUser
+    private let chat: Chat
     
-    init() {
-        // fetch messages based on user
+    @EnvironmentObject var supabaseManager: SupabaseManager
+    
+    init(chat: Chat) {
+        // fetch messages based on user and chat
+        self.chat = chat
+        // try await messages = supabase.fetchMessages(userId: supabase.currentUser.id, chatId: chat.id)
     }
 }

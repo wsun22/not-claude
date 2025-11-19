@@ -49,7 +49,6 @@ struct AuthView: View {
                     Image(systemName: systemName)
                         .foregroundStyle(.black)
                         .offset(y: -2)
-
                     
                     styrene(text,
                             fontStyle: .headline,

@@ -9,7 +9,8 @@ import Combine
 import Foundation
 import AuthenticationServices
 
-/// Manages Sign in with Apple authentication flow. Created for full control over SignInWithApple button styling.
+/// Manages Sign in with Apple authentication flow.
+/// Created for full control over SignInWithApple button styling.
 /// This singleton handles the Apple ID authorization process and delegates the result to SupabaseManager.
 /// Docs: https://developer.apple.com/documentation/AuthenticationServices/implementing-user-authentication-with-sign-in-with-apple
 final class AppleSignInManager: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {

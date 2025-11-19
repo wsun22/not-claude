@@ -7,18 +7,22 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 struct Chat {
-    var id: UUID
-    var name: String
-    var createdAt: Date
+    let id: UUID
+    let userId: UUID
+    var name: String?
+    let createdAt: Date
     var lastUpdated: Date
     
     init(id: UUID = UUID(),
-         name: String,
+         userId: UUID,
+         name: String?,
          createdAt: Date = Date(),
          lastUpdated: Date = Date()) {
         self.id = id
+        self.userId = userId
         self.name = name
         self.createdAt = createdAt
         self.lastUpdated = lastUpdated
@@ -28,7 +32,7 @@ struct Chat {
 final class ChatViewModel: ObservableObject {
     @Published var chats: [Chat] = []
     
-    let user = SupabaseManager.shared.currentUser
+    @EnvironmentObject var supabaseManager: SupabaseManager
     
     init() {
         // fetch user's chats

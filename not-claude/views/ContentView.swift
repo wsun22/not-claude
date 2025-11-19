@@ -62,7 +62,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 45)
                             .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.15)
                     )
-                    .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
+//                    .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
                     .offset(x: ltrOffset)
                     .offset(x: rtlOffset)
                     .gesture(handleLtrDrag(size: size,

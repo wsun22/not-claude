@@ -14,14 +14,19 @@ struct SplashView: View {
         ZStack{
             AppColors.backgroundPrimary.ignoresSafeArea()
             
-            tienne("notClaude",
-                   fontStyle: .title,
-                   fontWeight: .medium,
-                   foregroundStyle: AppColors.textPrimary)
+            HStack {
+                Image(systemName: "globe")
+                    .font(.title)
+                    .foregroundStyle(AppColors.accent)
+                
+                tienne("notClaude",
+                       fontStyle: .title,
+                       fontWeight: .medium)
+            }
         }
     }
 }
 
-#Preview {
-    SplashView()
-}
+//#Preview {
+//    SplashView()
+//}
