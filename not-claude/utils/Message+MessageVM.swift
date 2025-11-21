@@ -17,20 +17,17 @@ enum Role: String {
 
 struct Message {
     let id: UUID
-    let userId: UUID
     let chatId: UUID
     let role: Role
     let content: String
     let createdAt: Date
     
     init(id: UUID = UUID(),
-         userId: UUID,
          chatId: UUID,
          role: Role,
          content: String,
          createdAt: Date = Date()) {
         self.id = id
-        self.userId = userId
         self.chatId = chatId
         self.role = role
         self.content = content

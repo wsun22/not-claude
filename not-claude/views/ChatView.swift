@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChatView: View {
-    @State var userInput: String = ""
+    @State var userContent: String = ""
     @FocusState.Binding var showKeyboard: Bool
     
     let chat: Chat
@@ -34,7 +34,7 @@ struct ChatView: View {
                     .foregroundStyle(.white)
             }
             .safeAreaInset(edge: .bottom) {
-                InputSection(userInput: $userInput, showKeyboard: $showKeyboard)
+                InputSection(userContent: $userContent, showKeyboard: $showKeyboard)
                     .padding(.horizontal, 12)
                     .padding(.bottom, showKeyboard ? 12 : 0)
             }
@@ -51,12 +51,12 @@ struct ChatView: View {
 }
 
 private struct InputSection: View {
-    @Binding var userInput: String
+    @Binding var userContent: String
     @FocusState.Binding var showKeyboard: Bool
     
     var body: some View {
         VStack(spacing: 0) {
-            TextField("Chat with Claude", text: $userInput, axis: .vertical)
+            TextField("Chat with Claude", text: $userContent, axis: .vertical)
                 .font(.styreneB(fontStyle: .headline))
                 .foregroundStyle(AppColors.textPrimary)
                 .tracking(-0.85)
@@ -77,7 +77,7 @@ private struct InputSection: View {
                 Spacer()
                 
                 Button {
-                    handleUserInput()
+                    handleuserContent()
                 } label: {
                     Image(systemName: "arrow.up")
                         .foregroundStyle(AppColors.textPrimary)
@@ -97,11 +97,11 @@ private struct InputSection: View {
         )
     }
     
-    private func handleUserInput() {
-        guard !userInput.isEmpty else { return }
+    private func handleuserContent() {
+        guard !userContent.isEmpty else { return }
         
-        let trimmed: String = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        userInput = ""
+        let trimmed: String = userContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        userContent = ""
         showKeyboard = false
     }
 }
