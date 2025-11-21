@@ -8,17 +8,18 @@
 import SwiftUI
 
 enum TopViews {
-    case chat
+    case chat(Chat)
     case test
 }
 
 struct ContentView: View {
-    @State private var topView: TopViews = .chat
-    
+    @State private var topView: TopViews = .chat(Chat(userId: UUID()))
+
     @ViewBuilder
     private var topScreen: some View {
         switch topView {
-        case .chat: ChatView(isInputFocused: $isInputFocused)
+        case .chat(let chat):
+            ChatView(isInputFocused: $isInputFocused, chat: chat)
         case .test:
             ZStack {
                 Color.red.ignoresSafeArea()

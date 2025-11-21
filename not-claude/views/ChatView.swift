@@ -11,6 +11,8 @@ struct ChatView: View {
     @State var userInput: String = ""
     @FocusState.Binding var isInputFocused: Bool
     
+    let chat: Chat
+    
     var body: some View {
         GeometryReader { geo in 
             ZStack {
@@ -106,6 +108,7 @@ private struct InputSection: View {
 
 #Preview {
     @FocusState var isInputFocused
+    let chat: Chat = Chat(userId: UUID())
     
-    ChatView(isInputFocused: $isInputFocused)
+    ChatView(isInputFocused: $isInputFocused, chat: chat)
 }

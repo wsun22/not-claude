@@ -18,7 +18,7 @@ struct Chat {
     
     init(id: UUID = UUID(),
          userId: UUID,
-         name: String?,
+         name: String? = nil,
          createdAt: Date = Date(),
          lastUpdated: Date = Date()) {
         self.id = id
