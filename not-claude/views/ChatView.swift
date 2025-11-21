@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChatView: View {
     @State var userInput: String = ""
-    @FocusState.Binding var isInputFocused: Bool
+    @FocusState.Binding var showKeyboard: Bool
     
     let chat: Chat
     
@@ -34,16 +34,16 @@ struct ChatView: View {
                     .foregroundStyle(.white)
             }
             .safeAreaInset(edge: .bottom) {
-                InputSection(userInput: $userInput, isInputFocused: $isInputFocused)
+                InputSection(userInput: $userInput, showKeyboard: $showKeyboard)
                     .padding(.horizontal, 12)
-                    .padding(.bottom, isInputFocused ? 12 : 0)
+                    .padding(.bottom, showKeyboard ? 12 : 0)
             }
             .onTapGesture {
-                isInputFocused = false
+                showKeyboard = false
             }
             .onAppear { // open keyboard
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    isInputFocused = true
+                    showKeyboard = true
                 }
             }
         }
@@ -52,7 +52,7 @@ struct ChatView: View {
 
 private struct InputSection: View {
     @Binding var userInput: String
-    @FocusState.Binding var isInputFocused: Bool
+    @FocusState.Binding var showKeyboard: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -61,7 +61,7 @@ private struct InputSection: View {
                 .foregroundStyle(AppColors.textPrimary)
                 .tracking(-0.85)
                 .tint(AppColors.textTertiary) // control cursor color
-                .focused($isInputFocused)
+                .focused($showKeyboard)
                 .padding(.vertical, 16)
                 .lineLimit(5)
             
@@ -102,13 +102,13 @@ private struct InputSection: View {
         
         let trimmed: String = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
         userInput = ""
-        isInputFocused = false
+        showKeyboard = false
     }
 }
 
 #Preview {
-    @FocusState var isInputFocused
+    @FocusState var showKeyboard
     let chat: Chat = Chat(userId: UUID())
     
-    ChatView(isInputFocused: $isInputFocused, chat: chat)
+    ChatView(showKeyboard: $showKeyboard, chat: chat)
 }

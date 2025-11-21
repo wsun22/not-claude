@@ -19,7 +19,7 @@ struct ContentView: View {
     private var topScreen: some View {
         switch topView {
         case .chat(let chat):
-            ChatView(isInputFocused: $isInputFocused, chat: chat)
+            ChatView(showKeyboard: $showKeyboard, chat: chat)
         case .test:
             ZStack {
                 Color.red.ignoresSafeArea()
@@ -34,7 +34,7 @@ struct ContentView: View {
     @State private var rtlOffset: CGFloat = 0 // handle right to left drags
     @State private var lastOffset: CGFloat = 0
     
-    @FocusState private var isInputFocused: Bool
+    @FocusState private var showKeyboard: Bool
     
     var body: some View {
         GeometryReader { geo in
@@ -95,7 +95,7 @@ struct ContentView: View {
                     withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
                         ltrOffset = bottomViewWidth // offset top screen
                         lastOffset = ltrOffset // store
-                        isInputFocused = false // dismiss keyboard
+                        showKeyboard = false // dismiss keyboard
                     }
                     haptic(.medium)
                 } else if !isTopOffset { // if top screen is not already offset
