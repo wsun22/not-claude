@@ -20,6 +20,7 @@ struct ContentView: View {
         switch topView {
         case .chat(let chat):
             ChatView(showKeyboard: $showKeyboard, chat: chat)
+                .id(chat.id) // use chat.id as the view identity. aka, for a new chat obj, create a new ChatView
         case .test:
             ZStack {
                 Color.red.ignoresSafeArea()
