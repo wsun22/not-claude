@@ -45,7 +45,7 @@ struct ContentView: View {
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
-                AppColors.backgroundSecondary.ignoresSafeArea()
+        //        AppColors.backgroundSecondary.ignoresSafeArea()
                 
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
@@ -64,7 +64,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 45)
                             .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.15)
                     )
-//                    .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
+                    .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
                     .offset(x: ltrOffset)
                     .offset(x: rtlOffset)
                     .gesture(handleLtrDrag(size: size,
@@ -77,9 +77,7 @@ struct ContentView: View {
         }
     }
     
-    /*
-     handles left to right drags for the top screen
-     */
+     /// handles left to right drags for the top screen
     private func handleLtrDrag(size: CGSize,
                                slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat,
@@ -93,7 +91,7 @@ struct ContentView: View {
             .onEnded { value in
                 if value.translation.width > slideThreshold {
 //                    print("[ltr] threshold paased")
-                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
+                    withAnimation {
                         ltrOffset = bottomViewWidth // offset top screen
                         lastOffset = ltrOffset // store
                         showKeyboard = false // dismiss keyboard
@@ -101,17 +99,14 @@ struct ContentView: View {
                     haptic(.medium)
                 } else if !isTopOffset { // if top screen is not already offset
 //                    print("[ltr] threshold not passed")
-                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
+                    withAnimation {
                         ltrOffset = 0
                     }
                 }
             }
     }
     
-    /*
-     handles right to left drags for bottom screen
-     todo: pretty sure there needs to be min/maxing somewhere bc fast rtl drags/taps cause flash of underneath background on rhs
-     */
+    /// handles right to left drags for bottom screen
     private func handleRtlDrag(size: CGSize,
                                slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat) -> some Gesture {
@@ -123,7 +118,7 @@ struct ContentView: View {
             }
             .onEnded { value in
                 if abs(value.translation.width) > slideThreshold {
-                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
+                    withAnimation {
                         ltrOffset = 0
                         rtlOffset = 0
                         lastOffset = 0
@@ -131,19 +126,17 @@ struct ContentView: View {
                     haptic(.medium)
 //                    print("[rtl] threshold passed")
                 } else {
-                    withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
+                    withAnimation {
                         rtlOffset = 0
                     }
                 }
             }
     }
     
-    /*
-     handles the tap gesture for top screen when it is offset
-     */
+     /// handles the tap gesture for top screen when it is offset
     private func handleTap(isTopOffset: Bool) {
         if isTopOffset {
-            withAnimation(.snappy(duration: AnimationParams.duration, extraBounce: AnimationParams.extraBounce)) {
+            withAnimation {
                 ltrOffset = 0
                 rtlOffset = 0
                 lastOffset = 0
