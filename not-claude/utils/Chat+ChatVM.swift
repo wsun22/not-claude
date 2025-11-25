@@ -32,7 +32,7 @@ struct Chat {
 final class ChatViewModel: ObservableObject {
     @Published var chats: [Chat] = []
     
-    @EnvironmentObject var supabaseManager: SupabaseManager
+    private let supabaseManager: SupabaseManager = SupabaseManager.shared
     
     init() {
         // fetch user's chats

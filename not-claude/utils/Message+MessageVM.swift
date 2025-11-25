@@ -41,7 +41,7 @@ final class MessageViewModel: ObservableObject {
     
     private let chat: Chat
     
-    @EnvironmentObject var supabaseManager: SupabaseManager
+    private let supabaseManager: SupabaseManager = SupabaseManager.shared
     
     init(chat: Chat) {
         // fetch messages based on user and chat
