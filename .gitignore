@@ -64,6 +64,7 @@ playground.xcworkspace
 .env
 *.key
 *.plist
+!not-claude/Info.plist
 
 # Other
 *.tmp
