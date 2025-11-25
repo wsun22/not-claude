@@ -13,6 +13,7 @@ enum TopViews {
 }
 
 struct ContentView: View {
+    @StateObject private var chatVM: ChatViewModel = ChatViewModel()
     @State private var topView: TopViews = .chat(Chat(userId: UUID()))
 
     @ViewBuilder
@@ -44,13 +45,12 @@ struct ContentView: View {
             let bottomViewWidth: CGFloat = size.width * 0.85
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
-            ZStack(alignment: .leading) {
-        //        AppColors.backgroundSecondary.ignoresSafeArea()
-                
+            ZStack(alignment: .leading) {                
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
                             ltrOffset: $ltrOffset,
-                            lastOffset: $lastOffset)
+                            lastOffset: $lastOffset,
+                            chatVM: chatVM)
                 .frame(width: bottomViewWidth)
                 .gesture(handleRtlDrag(size: size,
                                        slideThreshold: slideThreshold,

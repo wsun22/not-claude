@@ -13,6 +13,8 @@ struct SidebarView: View {
     @Binding var ltrOffset: CGFloat
     @Binding var lastOffset: CGFloat
     
+    @ObservedObject var chatVM: ChatViewModel
+    
     @EnvironmentObject var supabaseManager: SupabaseManager
     
     var body: some View {
