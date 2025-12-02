@@ -32,8 +32,7 @@ struct ContentView: View {
         }
     }
     
-    @State private var ltrOffset: CGFloat = 0 // handle left to right drags
-    @State private var rtlOffset: CGFloat = 0 // handle right to left drags
+    @State private var offset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
     
     @FocusState private var showKeyboard: Bool
@@ -48,7 +47,7 @@ struct ContentView: View {
             ZStack(alignment: .leading) {                
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
-                            ltrOffset: $ltrOffset,
+                            offset: $offset,
                             lastOffset: $lastOffset,
                             chatVM: chatVM)
                 .frame(width: bottomViewWidth)
@@ -58,21 +57,20 @@ struct ContentView: View {
  
                 // maybe when top is offset, overlay something that makes topScreen ontap stuff useless, and for ui side dim/zoom out slightly
                 topScreen
-                    .padding(.top, geo.safeAreaInsets.top) // let content respect safe area
-                    .padding(.bottom, geo.safeAreaInsets.bottom) // let content respect safe area
+                    .padding(.top, geo.safeAreaInsets.top)
+                    .padding(.bottom, geo.safeAreaInsets.bottom)
                     .cornerRadius(45)
                     .overlay(
                         RoundedRectangle(cornerRadius: 45)
-                            .stroke(AppColors.outline, lineWidth: ltrOffset == 0 ? 0 : 0.15)
+                            .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
                     )
                     .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
-                    .offset(x: ltrOffset)
-                    .offset(x: rtlOffset)
+                    .offset(x: offset)
                     .gesture(handleLtrDrag(size: size,
                                            slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
-                    .onTapGesture { print("[ContentView] onTapGesture called"); handleTap(isTopOffset: isTopOffset) }
+                    .onTapGesture { handleTap(isTopOffset: isTopOffset) }
             }
             .ignoresSafeArea()
         }
@@ -85,24 +83,25 @@ struct ContentView: View {
                                isTopOffset: Bool) -> some Gesture {
         DragGesture()
             .onChanged { value in
-                if (value.translation.width > 0) && (ltrOffset + lastOffset < bottomViewWidth) {
-                    ltrOffset = min(value.translation.width, bottomViewWidth)
+                let newOffset = lastOffset + value.translation.width
+                if newOffset >= 0 && newOffset <= bottomViewWidth {
+                    offset = newOffset
                 }
             }
             .onEnded { value in
                 if value.translation.width > slideThreshold {
 //                    print("[ltr] threshold paased")
                     withAnimation {
-                        ltrOffset = bottomViewWidth // offset top screen
-                        lastOffset = ltrOffset // store
-                        showKeyboard = false // dismiss keyboard
+                        offset = bottomViewWidth
+                        lastOffset = bottomViewWidth
+                        showKeyboard = false
                     }
                     haptic(.medium)
                 } else if !isTopOffset { // if top screen is not already offset
 //                    print("[ltr] threshold not passed")
                     withAnimation {
-                        ltrOffset = 0
                         lastOffset = 0
+                        offset = 0
                     }
                 }
             }
@@ -114,22 +113,21 @@ struct ContentView: View {
                                bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
             .onChanged { value in
-                if value.translation.width < 0 {
-                    rtlOffset = value.translation.width
+                let newOffset = lastOffset + value.translation.width
+                if newOffset >= 0 && newOffset <= bottomViewWidth {
+                    offset = newOffset
                 }
             }
             .onEnded { value in
                 if abs(value.translation.width) > slideThreshold {
                     withAnimation {
-                        ltrOffset = 0
-                        rtlOffset = 0
+                        offset = 0
                         lastOffset = 0
                     }
                     haptic(.medium)
-//                    print("[rtl] threshold passed")
                 } else {
                     withAnimation {
-                        rtlOffset = 0
+                        offset = lastOffset
                     }
                 }
             }
@@ -139,8 +137,7 @@ struct ContentView: View {
     private func handleTap(isTopOffset: Bool) {
         if isTopOffset {
             withAnimation {
-                ltrOffset = 0
-                rtlOffset = 0
+                offset = 0
                 lastOffset = 0
             }
             haptic(.medium)

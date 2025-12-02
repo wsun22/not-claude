@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SidebarView: View {
     @Binding var topView: TopViews
-    @Binding var ltrOffset: CGFloat
+    @Binding var offset: CGFloat
     @Binding var lastOffset: CGFloat
     
     @ObservedObject var chatVM: ChatViewModel
@@ -25,7 +25,7 @@ struct SidebarView: View {
                 Button {
                     topView = .chat(Chat(userId: UUID()))
                     withAnimation {
-                        ltrOffset = 0
+                        offset = 0
                         lastOffset = 0
                     }
                     haptic(.medium)
@@ -36,7 +36,7 @@ struct SidebarView: View {
                 Button {
                     topView = .test
                     withAnimation {
-                        ltrOffset = 0
+                        offset = 0
                         lastOffset = 0
                     }
                     haptic(.medium)
