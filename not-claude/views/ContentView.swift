@@ -20,7 +20,7 @@ struct ContentView: View {
     private var topScreen: some View {
         switch topView {
         case .chat(let chat):
-            ChatView(showKeyboard: $showKeyboard, chat: chat)
+            ChatView(showKeyboard: $showKeyboard, chat: chat, lastOffset: lastOffset)
                 .id(chat.id) // use chat.id as the view identity. aka, for a new chat obj, create a new ChatView
         case .test:
             ZStack {
@@ -56,6 +56,7 @@ struct ContentView: View {
                                        slideThreshold: slideThreshold,
                                        bottomViewWidth: bottomViewWidth))
  
+                // maybe when top is offset, overlay something that makes topScreen ontap stuff useless, and for ui side dim/zoom out slightly
                 topScreen
                     .padding(.top, geo.safeAreaInsets.top) // let content respect safe area
                     .padding(.bottom, geo.safeAreaInsets.bottom) // let content respect safe area
@@ -71,21 +72,21 @@ struct ContentView: View {
                                            slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
-                    .onTapGesture { handleTap(isTopOffset: isTopOffset) }
+                    .onTapGesture { print("[ContentView] onTapGesture called"); handleTap(isTopOffset: isTopOffset) }
             }
             .ignoresSafeArea()
         }
     }
     
-     /// handles left to right drags for the top screen
+     /// handles left to right drags for the top screen. needs min maxing to bind, bc sometimes top screen moves too far right, can see white background to right of sidebarview
     private func handleLtrDrag(size: CGSize,
                                slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat,
                                isTopOffset: Bool) -> some Gesture {
         DragGesture()
             .onChanged { value in
-                if (value.translation.width > 0) && (ltrOffset + lastOffset < size.width) {
-                    ltrOffset = value.translation.width
+                if (value.translation.width > 0) && (ltrOffset + lastOffset < bottomViewWidth) {
+                    ltrOffset = min(value.translation.width, bottomViewWidth)
                 }
             }
             .onEnded { value in
@@ -101,12 +102,13 @@ struct ContentView: View {
 //                    print("[ltr] threshold not passed")
                     withAnimation {
                         ltrOffset = 0
+                        lastOffset = 0
                     }
                 }
             }
     }
     
-    /// handles right to left drags for bottom screen
+    /// handles right to left drags for bottom screen. needs min max, bc sometimes screen moves too far left, can see white background on right
     private func handleRtlDrag(size: CGSize,
                                slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat) -> some Gesture {

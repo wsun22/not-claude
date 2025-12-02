@@ -12,9 +12,14 @@ struct ChatView: View {
     @FocusState.Binding var showKeyboard: Bool
     
     let chat: Chat
+    let lastOffset: CGFloat
     
     var body: some View {
-        GeometryReader { geo in 
+        GeometryReader { geo in
+            let size: CGSize = geo.size
+            let bottomViewWidth: CGFloat = size.width * 0.85
+            let isTopOffset: Bool = lastOffset == bottomViewWidth
+            
             ZStack {
                 AppColors.backgroundPrimary.ignoresSafeArea()
                 
@@ -39,6 +44,7 @@ struct ChatView: View {
                     .padding(.bottom, showKeyboard ? 12 : 0)
             }
             .onTapGesture {
+                print("[ChatView] onTapGesture called")
                 showKeyboard = false
             }
             .onAppear { // open keyboard
@@ -46,6 +52,7 @@ struct ChatView: View {
                     showKeyboard = true
                 }
             }
+           .allowsHitTesting(lastOffset == 0)
         }
     }
 }
@@ -110,5 +117,5 @@ private struct InputSection: View {
     @FocusState var showKeyboard
     let chat: Chat = Chat(userId: UUID())
     
-    ChatView(showKeyboard: $showKeyboard, chat: chat)
+    ChatView(showKeyboard: $showKeyboard, chat: chat, lastOffset: 0)
 }
