@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct ChatView: View {
-    @State var userContent: String = ""
+    @State private var userContent: String = ""
     @FocusState.Binding var showKeyboard: Bool
-    @State var isNewChat: Bool
+    @State private var isNewChat: Bool
     
-    let chat: Chat
-    let lastOffset: CGFloat // i dont remember why i want this ngl
+    private let chat: Chat
+    private let lastOffset: CGFloat // i dont remember why i want this ngl
     
-    @StateObject private var messsageVM: MessageViewModel
+    @StateObject private var messageVM: MessageViewModel
     @ObservedObject private var chatVM: ChatViewModel
     
     init(showKeyboard: FocusState<Bool>.Binding,
@@ -27,7 +27,7 @@ struct ChatView: View {
         self.chat = chat
         self.lastOffset = lastOffset
         self._isNewChat = State(initialValue: isNewChat)
-        self._messsageVM = StateObject(wrappedValue: MessageViewModel(chat: chat, isNewChat: isNewChat))
+        self._messageVM = StateObject(wrappedValue: MessageViewModel(chat: chat, isNewChat: isNewChat))
         self.chatVM = chatVM
     }
     
