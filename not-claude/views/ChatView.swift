@@ -13,19 +13,22 @@ struct ChatView: View {
     @State var isNewChat: Bool
     
     let chat: Chat
-    let lastOffset: CGFloat
+    let lastOffset: CGFloat // i dont remember why i want this ngl
     
     @StateObject private var messsageVM: MessageViewModel
+    @ObservedObject private var chatVM: ChatViewModel
     
     init(showKeyboard: FocusState<Bool>.Binding,
          chat: Chat,
          lastOffset: CGFloat,
-         isNewChat: Bool) {
+         isNewChat: Bool,
+         chatVM: ChatViewModel) {
         self._showKeyboard = showKeyboard
         self.chat = chat
         self.lastOffset = lastOffset
         self._isNewChat = State(initialValue: isNewChat)
         self._messsageVM = StateObject(wrappedValue: MessageViewModel(chat: chat, isNewChat: isNewChat))
+        self.chatVM = chatVM
     }
     
     var body: some View {
@@ -50,7 +53,9 @@ struct ChatView: View {
             .safeAreaInset(edge: .bottom) {
                 InputSection(userContent: $userContent,
                              showKeyboard: $showKeyboard,
-                             isNewChat: $isNewChat)
+                             isNewChat: $isNewChat,
+                             chatVM: chatVM,
+                             chat: chat)
                     .padding(.horizontal, 12)
                     .padding(.bottom, showKeyboard ? 12 : 0)
             }
@@ -72,6 +77,8 @@ private struct InputSection: View {
     @Binding var userContent: String
     @FocusState.Binding var showKeyboard: Bool
     @Binding var isNewChat: Bool
+    @ObservedObject var chatVM: ChatViewModel
+    let chat: Chat
     
     var body: some View {
         VStack(spacing: 0) {
@@ -122,7 +129,14 @@ private struct InputSection: View {
         let trimmed: String = userContent.trimmingCharacters(in: .whitespacesAndNewlines)
         userContent = ""
         showKeyboard = false
-        isNewChat = false
+        
+        Task {
+            if isNewChat {
+                await chatVM.saveNewChat(chat: chat)
+                isNewChat = false
+            }
+            // await messageVM.sendMessage()
+        }
     }
 }
 
@@ -144,9 +158,11 @@ private struct NewChatView: View {
 #Preview {
     @FocusState var showKeyboard
     let chat: Chat = Chat(userId: UUID())
+    let chatVM: ChatViewModel = ChatViewModel()
     
     ChatView(showKeyboard: $showKeyboard,
              chat: chat,
              lastOffset: 0,
-             isNewChat: true)
+             isNewChat: true,
+             chatVM: chatVM)
 }

@@ -23,7 +23,8 @@ struct ContentView: View {
             ChatView(showKeyboard: $showKeyboard,
                      chat: chat,
                      lastOffset: lastOffset,
-                     isNewChat: isNewChat)
+                     isNewChat: isNewChat,
+                     chatVM: chatVM)
             .id(chat.id) // use chat.id as the view identity
         case .test:
             ZStack {

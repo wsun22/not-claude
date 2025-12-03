@@ -37,4 +37,8 @@ final class ChatViewModel: ObservableObject {
     init() {
         // fetch user's chats
     }
+    
+    func saveNewChat(chat: Chat) async {
+        
+    }
 }
