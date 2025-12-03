@@ -21,7 +21,7 @@ struct ContentView: View {
         switch topView {
         case .chat(let chat):
             ChatView(showKeyboard: $showKeyboard, chat: chat, lastOffset: lastOffset)
-                .id(chat.id) // use chat.id as the view identity. aka, for a new chat obj, create a new ChatView
+                .id(chat.id) // use chat.id as the view identity
         case .test:
             ZStack {
                 Color.red.ignoresSafeArea()
@@ -34,7 +34,6 @@ struct ContentView: View {
     
     @State private var offset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
-    
     @FocusState private var showKeyboard: Bool
     
     var body: some View {
@@ -65,7 +64,7 @@ struct ContentView: View {
                             .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
                     )
                     .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
-                    .offset(x: offset)
+                    .offset(x: min(max(offset, 0), bottomViewWidth))
                     .gesture(handleLtrDrag(size: size,
                                            slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth,
@@ -84,13 +83,10 @@ struct ContentView: View {
         DragGesture()
             .onChanged { value in
                 let newOffset = lastOffset + value.translation.width
-                if newOffset >= 0 && newOffset <= bottomViewWidth {
-                    offset = newOffset
-                }
+                offset = min(max(newOffset, 0), bottomViewWidth)
             }
             .onEnded { value in
                 if value.translation.width > slideThreshold {
-//                    print("[ltr] threshold paased")
                     withAnimation {
                         offset = bottomViewWidth
                         lastOffset = bottomViewWidth
@@ -98,12 +94,11 @@ struct ContentView: View {
                     }
                     haptic(.medium)
                 } else if !isTopOffset { // if top screen is not already offset
-//                    print("[ltr] threshold not passed")
                     withAnimation {
                         lastOffset = 0
                         offset = 0
                     }
-                }
+                } 
             }
     }
     
@@ -114,9 +109,7 @@ struct ContentView: View {
         DragGesture()
             .onChanged { value in
                 let newOffset = lastOffset + value.translation.width
-                if newOffset >= 0 && newOffset <= bottomViewWidth {
-                    offset = newOffset
-                }
+                offset = min(max(newOffset, 0), bottomViewWidth)
             }
             .onEnded { value in
                 if abs(value.translation.width) > slideThreshold {
@@ -141,7 +134,6 @@ struct ContentView: View {
                 lastOffset = 0
             }
             haptic(.medium)
-//            print("Tapped")
         }
     }
 }

@@ -14,6 +14,15 @@ struct ChatView: View {
     let chat: Chat
     let lastOffset: CGFloat
     
+    @StateObject private var messsageVM: MessageViewModel
+    
+    init(showKeyboard: FocusState<Bool>.Binding, chat: Chat, lastOffset: CGFloat) {
+        self._showKeyboard = showKeyboard
+        self.chat = chat
+        self.lastOffset = lastOffset
+        self._messsageVM = StateObject(wrappedValue: MessageViewModel(chat: chat))
+    }
+    
     var body: some View {
         GeometryReader { geo in
             let size: CGSize = geo.size
