@@ -23,7 +23,7 @@ struct SidebarView: View {
             
             VStack {
                 Button {
-                    topView = .chat(Chat(userId: UUID()))
+                    topView = .chat(Chat(userId: UUID()), true)
                     withAnimation {
                         offset = 0
                         lastOffset = 0

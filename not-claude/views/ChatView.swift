@@ -10,17 +10,22 @@ import SwiftUI
 struct ChatView: View {
     @State var userContent: String = ""
     @FocusState.Binding var showKeyboard: Bool
+    @State var isNewChat: Bool
     
     let chat: Chat
     let lastOffset: CGFloat
     
     @StateObject private var messsageVM: MessageViewModel
     
-    init(showKeyboard: FocusState<Bool>.Binding, chat: Chat, lastOffset: CGFloat) {
+    init(showKeyboard: FocusState<Bool>.Binding,
+         chat: Chat,
+         lastOffset: CGFloat,
+         isNewChat: Bool) {
         self._showKeyboard = showKeyboard
         self.chat = chat
         self.lastOffset = lastOffset
         self._messsageVM = StateObject(wrappedValue: MessageViewModel(chat: chat))
+        self._isNewChat = State(initialValue: isNewChat)
     }
     
     var body: some View {
@@ -126,5 +131,8 @@ private struct InputSection: View {
     @FocusState var showKeyboard
     let chat: Chat = Chat(userId: UUID())
     
-    ChatView(showKeyboard: $showKeyboard, chat: chat, lastOffset: 0)
+    ChatView(showKeyboard: $showKeyboard,
+             chat: chat,
+             lastOffset: 0,
+    isNewChat: true)
 }

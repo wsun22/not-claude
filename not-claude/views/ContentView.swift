@@ -8,19 +8,22 @@
 import SwiftUI
 
 enum TopViews {
-    case chat(Chat)
+    case chat(Chat, Bool)
     case test
 }
 
 struct ContentView: View {
     @StateObject private var chatVM: ChatViewModel = ChatViewModel()
-    @State private var topView: TopViews = .chat(Chat(userId: UUID()))
+    @State private var topView: TopViews = .chat(Chat(userId: UUID()), true)
 
     @ViewBuilder
     private var topScreen: some View {
         switch topView {
-        case .chat(let chat):
-            ChatView(showKeyboard: $showKeyboard, chat: chat, lastOffset: lastOffset)
+        case .chat(let chat, let isNewChat):
+            ChatView(showKeyboard: $showKeyboard,
+                     chat: chat,
+                     lastOffset: lastOffset,
+                     isNewChat: isNewChat)
                 .id(chat.id) // use chat.id as the view identity
         case .test:
             ZStack {
