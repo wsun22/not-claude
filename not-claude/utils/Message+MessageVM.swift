@@ -40,12 +40,14 @@ final class MessageViewModel: ObservableObject {
     @Published var isTyping: Bool = false
     
     private let chat: Chat
-    
     private let supabaseManager: SupabaseManager = SupabaseManager.shared
     
-    init(chat: Chat) {
+    init(chat: Chat, isNewChat: Bool) {
         // fetch messages based on user and chat
         self.chat = chat
         // try await messages = supabase.fetchMessages(userId: supabase.currentUser.id, chatId: chat.id)
+        if !isNewChat {
+            // fetch messages
+        }
     }
 }

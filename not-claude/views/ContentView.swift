@@ -15,7 +15,7 @@ enum TopViews {
 struct ContentView: View {
     @StateObject private var chatVM: ChatViewModel = ChatViewModel()
     @State private var topView: TopViews = .chat(Chat(userId: UUID()), true)
-
+    
     @ViewBuilder
     private var topScreen: some View {
         switch topView {
@@ -24,7 +24,7 @@ struct ContentView: View {
                      chat: chat,
                      lastOffset: lastOffset,
                      isNewChat: isNewChat)
-                .id(chat.id) // use chat.id as the view identity
+            .id(chat.id) // use chat.id as the view identity
         case .test:
             ZStack {
                 Color.red.ignoresSafeArea()
@@ -46,7 +46,7 @@ struct ContentView: View {
             let bottomViewWidth: CGFloat = size.width * 0.85
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
-            ZStack(alignment: .leading) {                
+            ZStack(alignment: .leading) {
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
                             offset: $offset,
@@ -56,7 +56,7 @@ struct ContentView: View {
                 .gesture(handleRtlDrag(size: size,
                                        slideThreshold: slideThreshold,
                                        bottomViewWidth: bottomViewWidth))
- 
+                
                 // maybe when top is offset, overlay something that makes topScreen ontap stuff useless, and for ui side dim/zoom out slightly
                 topScreen
                     .padding(.top, geo.safeAreaInsets.top)
@@ -78,7 +78,7 @@ struct ContentView: View {
         }
     }
     
-     /// handles left to right drags for the top screen. needs min maxing to bind, bc sometimes top screen moves too far right, can see white background to right of sidebarview
+    /// handles left to right drags for the top screen. needs min maxing to bind, bc sometimes top screen moves too far right, can see white background to right of sidebarview
     private func handleLtrDrag(size: CGSize,
                                slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat,
@@ -101,7 +101,7 @@ struct ContentView: View {
                         lastOffset = 0
                         offset = 0
                     }
-                } 
+                }
             }
     }
     
@@ -129,7 +129,7 @@ struct ContentView: View {
             }
     }
     
-     /// handles the tap gesture for top screen when it is offset
+    /// handles the tap gesture for top screen when it is offset
     private func handleTap(isTopOffset: Bool) {
         if isTopOffset {
             withAnimation {

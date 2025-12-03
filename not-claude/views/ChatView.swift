@@ -24,8 +24,8 @@ struct ChatView: View {
         self._showKeyboard = showKeyboard
         self.chat = chat
         self.lastOffset = lastOffset
-        self._messsageVM = StateObject(wrappedValue: MessageViewModel(chat: chat))
         self._isNewChat = State(initialValue: isNewChat)
+        self._messsageVM = StateObject(wrappedValue: MessageViewModel(chat: chat, isNewChat: isNewChat))
     }
     
     var body: some View {
@@ -37,15 +37,10 @@ struct ChatView: View {
             ZStack {
                 AppColors.backgroundPrimary.ignoresSafeArea()
                 
-                VStack(spacing: 16) {
-                    Image(systemName: "globe")
-                        .foregroundStyle(AppColors.accent)
+                if isNewChat {
+                    NewChatView()
+                } else {
                     
-                    tienne("How can I help you this afternoon?",
-                           fontStyle: .title,
-                           fontWeight: .regular,
-                           foregroundStyle: AppColors.textTertiary)
-                    .multilineTextAlignment(.center)
                 }
             }
             .safeAreaInset(edge: .top) {
@@ -53,7 +48,9 @@ struct ChatView: View {
                     .foregroundStyle(.white)
             }
             .safeAreaInset(edge: .bottom) {
-                InputSection(userContent: $userContent, showKeyboard: $showKeyboard)
+                InputSection(userContent: $userContent,
+                             showKeyboard: $showKeyboard,
+                             isNewChat: $isNewChat)
                     .padding(.horizontal, 12)
                     .padding(.bottom, showKeyboard ? 12 : 0)
             }
@@ -66,7 +63,7 @@ struct ChatView: View {
                     showKeyboard = true
                 }
             }
-           .allowsHitTesting(lastOffset == 0)
+            .allowsHitTesting(lastOffset == 0)
         }
     }
 }
@@ -74,6 +71,7 @@ struct ChatView: View {
 private struct InputSection: View {
     @Binding var userContent: String
     @FocusState.Binding var showKeyboard: Bool
+    @Binding var isNewChat: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -98,7 +96,7 @@ private struct InputSection: View {
                 Spacer()
                 
                 Button {
-                    handleuserContent()
+                    handleUserContent()
                 } label: {
                     Image(systemName: "arrow.up")
                         .foregroundStyle(AppColors.textPrimary)
@@ -118,12 +116,28 @@ private struct InputSection: View {
         )
     }
     
-    private func handleuserContent() {
+    private func handleUserContent() {
         guard !userContent.isEmpty else { return }
         
         let trimmed: String = userContent.trimmingCharacters(in: .whitespacesAndNewlines)
         userContent = ""
         showKeyboard = false
+        isNewChat = false
+    }
+}
+
+private struct NewChatView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "globe")
+                .foregroundStyle(AppColors.accent)
+            
+            tienne("How can I help you this afternoon?",
+                   fontStyle: .title,
+                   fontWeight: .regular,
+                   foregroundStyle: AppColors.textTertiary)
+            .multilineTextAlignment(.center)
+        }
     }
 }
 
@@ -134,5 +148,5 @@ private struct InputSection: View {
     ChatView(showKeyboard: $showKeyboard,
              chat: chat,
              lastOffset: 0,
-    isNewChat: true)
+             isNewChat: true)
 }
