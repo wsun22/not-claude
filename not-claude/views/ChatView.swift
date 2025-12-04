@@ -35,7 +35,7 @@ struct ChatView: View {
         GeometryReader { geo in
             let size: CGSize = geo.size
             let bottomViewWidth: CGFloat = size.width * 0.85
-            let isTopOffset: Bool = lastOffset == bottomViewWidth
+//          let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack {
                 AppColors.backgroundPrimary.ignoresSafeArea()
@@ -55,6 +55,7 @@ struct ChatView: View {
                              showKeyboard: $showKeyboard,
                              isNewChat: $isNewChat,
                              chatVM: chatVM,
+                             messageVM: messageVM,
                              chat: chat)
                     .padding(.horizontal, 12)
                     .padding(.bottom, showKeyboard ? 12 : 0)
@@ -78,6 +79,7 @@ private struct InputSection: View {
     @FocusState.Binding var showKeyboard: Bool
     @Binding var isNewChat: Bool
     @ObservedObject var chatVM: ChatViewModel
+    @ObservedObject var messageVM: MessageViewModel
     let chat: Chat
     
     var body: some View {
@@ -135,7 +137,7 @@ private struct InputSection: View {
                 await chatVM.saveNewChat(chat: chat)
                 isNewChat = false
             }
-            // await messageVM.sendMessage()
+            await messageVM.sendMessage(content: trimmed)
         }
     }
 }

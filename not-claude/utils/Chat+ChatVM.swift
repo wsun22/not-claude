@@ -39,6 +39,7 @@ final class ChatViewModel: ObservableObject {
     }
     
     func saveNewChat(chat: Chat) async {
-        
+        // save to supabase
+        chats.append(chat)
     }
 }

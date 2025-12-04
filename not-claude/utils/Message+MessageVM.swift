@@ -43,11 +43,24 @@ final class MessageViewModel: ObservableObject {
     private let supabaseManager: SupabaseManager = SupabaseManager.shared
     
     init(chat: Chat, isNewChat: Bool) {
-        // fetch messages based on user and chat
         self.chat = chat
-        // try await messages = supabase.fetchMessages(userId: supabase.currentUser.id, chatId: chat.id)
         if !isNewChat {
-            // fetch messages
+            Task {
+                await fetchMessages(chat: chat)
+            }
         }
     }
+    
+    private func fetchMessages(chat: Chat) async {
+        // supabase fetch
+    }
+    
+    func sendMessage(content: String) async {
+        let message: Message = Message(chatId: chat.id, role: .user, content: content)
+        messages.append(message)
+        
+        // supabase save message
+        // start ai response: backend: send last x messages from chat, stream chunks to proxy then to client
+    }
+    
 }
