@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import Auth
 
 struct Chat {
     let id: UUID
@@ -32,14 +33,26 @@ struct Chat {
 final class ChatViewModel: ObservableObject {
     @Published var chats: [Chat] = []
     
-    private let supabaseManager: SupabaseManager = SupabaseManager.shared
+    private let supabase: SupabaseManager = SupabaseManager.shared
     
     init() {
-        // fetch user's chats
+        Task {
+            await fetchChats()
+        }
     }
     
-    func saveNewChat(chat: Chat) async {
-        // save to supabase
-        chats.append(chat)
+    private func fetchChats() async {
+        
+    }
+    
+    func saveNewChat(_ chat: Chat, firstMessage: String) async {
+        guard let userId = supabase.currentUser?.id else {
+            print("Error: no user")
+            return
+        }
+        
+        let temp = Chat(id: chat.id, userId: userId)
+        chats.append(temp)
+        
     }
 }

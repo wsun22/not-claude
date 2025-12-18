@@ -9,18 +9,18 @@ import SwiftUI
 
 @main
 struct not_claudeApp: App {
-    @StateObject private var supabaseManager = SupabaseManager.shared
+    @StateObject private var supabase = SupabaseManager.shared
     
     var body: some Scene {
         WindowGroup {
-            if supabaseManager.isCheckingAuth {
+            if supabase.isCheckingAuth {
                 SplashView() // show splash screen
-            } else if supabaseManager.currentUser != nil {
+            } else if supabase.currentUser != nil {
                 ContentView() // user is signed in
             } else {
                 AuthView() // not signed in
             }
         }
-        .environmentObject(supabaseManager)
+        .environmentObject(supabase)
     }
 }

@@ -81,6 +81,10 @@ final class SupabaseManager: ObservableObject {
             print("[SupabaseManager] Sign in failed: \(error)")
         }
     }
+        
+    func createNewChatWithMessage(chat: Chat, firstMessage: String) async -> Chat {
+        return Chat(userId: UUID())
+    }
     
     func signOut() async {
         try? await client.auth.signOut()

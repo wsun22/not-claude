@@ -15,7 +15,7 @@ struct SidebarView: View {
     
     @ObservedObject var chatVM: ChatViewModel
     
-    @EnvironmentObject var supabaseManager: SupabaseManager
+    @EnvironmentObject var supabase: SupabaseManager
     
     var body: some View {
         ZStack {
@@ -46,7 +46,7 @@ struct SidebarView: View {
                                 
                 Button {
                     Task {
-                        await supabaseManager.signOut()
+                        await supabase.signOut()
                     }
                 } label: {
                     Text("sign out")

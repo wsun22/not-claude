@@ -45,13 +45,14 @@ final class MessageViewModel: ObservableObject {
     init(chat: Chat, isNewChat: Bool) {
         self.chat = chat
         if !isNewChat {
+            print("[MessageViewModel] isNewChat: \(isNewChat) => fetching!")
             Task {
-                await fetchMessages(chat: chat)
+                await fetchMessages(for: chat)
             }
         }
     }
     
-    private func fetchMessages(chat: Chat) async {
+    private func fetchMessages(for chat: Chat) async {
         // supabase fetch
     }
     
