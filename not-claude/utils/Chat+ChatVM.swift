@@ -46,7 +46,7 @@ final class ChatViewModel: ObservableObject {
     }
     
     /// save new chat only handles saving a temp chat element to chats array
-    func saveNewChat(_ chat: Chat) async {
+    func saveNewChat(_ chat: Chat) {
         guard let userId = supabase.currentUser?.id else {
             print("Error: no user")
             return

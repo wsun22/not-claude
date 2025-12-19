@@ -134,8 +134,7 @@ private struct InputSection: View {
         
         Task {
             if isNewChat {
-                // chatVM.saveNewChat will be special: it needs to handle generating title for chat, saving to db, and 1st stream
-                await chatVM.saveNewChat(chat)
+                chatVM.saveNewChat(chat)
             }
             await messageVM.sendMessage(content: trimmed, isNewChat: isNewChat)
             
