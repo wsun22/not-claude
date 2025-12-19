@@ -82,7 +82,19 @@ final class SupabaseManager: ObservableObject {
         }
     }
     
-    func signOut() async {
-        try? await client.auth.signOut()
+    func signOut() async throws{
+        try await client.auth.signOut()
+    }
+    
+    func sendMessage(chatId: UUID, content: String, isNewChat: Bool) async throws {
+        let url = URL(string: "https://ipamulxprbpujyspawun.supabase.co/functions/v1/stream-response")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = ["chatId": chatId.uuidString, "content": content, "isNewChat": String(isNewChat)]
+        request.httpBody = try JSONEncoder().encode(body)
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
     }
 }

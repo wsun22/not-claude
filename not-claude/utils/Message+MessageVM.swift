@@ -65,7 +65,15 @@ final class MessageViewModel: ObservableObject {
         let message: Message = Message(chatId: chat.id, role: .user, content: content)
         messages.append(message)
         
-        
+        do {
+            try await supabase.sendMessage(
+                chatId: chat.id,
+                content: content,
+                isNewChat: isNewChat
+            )
+        } catch {
+            print("Error: \(error)")
+        }
     }
     
 }

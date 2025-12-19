@@ -46,7 +46,11 @@ struct SidebarView: View {
                                 
                 Button {
                     Task {
-                        await supabase.signOut()
+                        do {
+                            try await supabase.signOut()
+                        } catch {
+                            print("Error: \(error)")
+                        }
                     }
                 } label: {
                     Text("sign out")
