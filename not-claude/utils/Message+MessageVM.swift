@@ -40,7 +40,7 @@ final class MessageViewModel: ObservableObject {
     @Published var isTyping: Bool = false
     
     private let chat: Chat
-    private let supabaseManager: SupabaseManager = SupabaseManager.shared
+    private let supabase: SupabaseManager = SupabaseManager.shared
     
     init(chat: Chat, isNewChat: Bool) {
         self.chat = chat
@@ -56,12 +56,16 @@ final class MessageViewModel: ObservableObject {
         // supabase fetch
     }
     
-    func sendMessage(content: String) async {
+    /*
+     1) save message to messages
+     2) hit backend func--this func determines whether to save a new chat before saving the message via isNewChat
+     3) then, handle incoming chunks
+     */
+    func sendMessage(content: String, isNewChat: Bool) async {
         let message: Message = Message(chatId: chat.id, role: .user, content: content)
         messages.append(message)
         
-        // supabase save message
-        // start ai response: backend: send last x messages from chat, stream chunks to proxy then to client
+        
     }
     
 }

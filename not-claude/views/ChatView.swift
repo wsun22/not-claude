@@ -35,7 +35,7 @@ struct ChatView: View {
         GeometryReader { geo in
             let size: CGSize = geo.size
             let bottomViewWidth: CGFloat = size.width * 0.85
-//          let isTopOffset: Bool = lastOffset == bottomViewWidth
+            //          let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack {
                 AppColors.backgroundPrimary.ignoresSafeArea()
@@ -57,8 +57,8 @@ struct ChatView: View {
                              chatVM: chatVM,
                              messageVM: messageVM,
                              chat: chat)
-                    .padding(.horizontal, 12)
-                    .padding(.bottom, showKeyboard ? 12 : 0)
+                .padding(.horizontal, 12)
+                .padding(.bottom, showKeyboard ? 12 : 0)
             }
             .onTapGesture {
                 print("[ChatView] onTapGesture called")
@@ -135,10 +135,14 @@ private struct InputSection: View {
         Task {
             if isNewChat {
                 // chatVM.saveNewChat will be special: it needs to handle generating title for chat, saving to db, and 1st stream
-                await chatVM.saveNewChat(chat, firstMessage: trimmed)
+                await chatVM.saveNewChat(chat)
+            }
+            await messageVM.sendMessage(content: trimmed, isNewChat: isNewChat)
+            
+            if isNewChat {
+                // handle polling
                 isNewChat = false
-            } else {
-                await messageVM.sendMessage(content: trimmed)
+                await chatVM.pollForTitle(chat.id)
             }
         }
     }

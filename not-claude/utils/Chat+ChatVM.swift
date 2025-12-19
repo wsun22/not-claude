@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
-import Auth
+import Supabase
 
 struct Chat {
     let id: UUID
@@ -45,7 +45,8 @@ final class ChatViewModel: ObservableObject {
         
     }
     
-    func saveNewChat(_ chat: Chat, firstMessage: String) async {
+    /// save new chat only handles saving a temp chat element to chats array
+    func saveNewChat(_ chat: Chat) async {
         guard let userId = supabase.currentUser?.id else {
             print("Error: no user")
             return
@@ -53,6 +54,9 @@ final class ChatViewModel: ObservableObject {
         
         let temp = Chat(id: chat.id, userId: userId)
         chats.append(temp)
+    }
+    
+    func pollForTitle(_ id: UUID) async {
         
     }
 }
