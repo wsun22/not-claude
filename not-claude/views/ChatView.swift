@@ -134,7 +134,7 @@ private struct InputSection: View {
         
         Task {
             if isNewChat {
-                chatVM.saveNewChat(chat)
+                chatVM.addTempChat(chat)
             }
             await messageVM.sendMessage(content: trimmed, isNewChat: isNewChat)
             
