@@ -53,6 +53,7 @@ final class ChatViewModel: ObservableObject {
     private func fetchChats() async {
         do {
             chats = try await supabase.fetchChats(n: fetchNChats)
+            print("fetched! Count: \(chats.count)")
             fetchNChats += 10
         } catch {
             print("Error: \(error)")

@@ -50,6 +50,8 @@ final class MessageViewModel: ObservableObject {
     private let chat: Chat
     private let supabase: SupabaseManager = SupabaseManager.shared
     
+    private var fetchNMessages: Int = 10
+    
     init(chat: Chat, isNewChat: Bool) {
         self.chat = chat
         if !isNewChat {
@@ -61,7 +63,12 @@ final class MessageViewModel: ObservableObject {
     }
     
     private func fetchMessages(for chat: Chat) async {
-        // supabase fetch
+        do {
+            messages = try await supabase.fetchMessages(chatId: chat.id, n: fetchNMessages)
+            fetchNMessages += 10
+        } catch {
+            print("Error: \(error)")
+        }
     }
     
     /*

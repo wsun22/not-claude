@@ -97,6 +97,17 @@ final class SupabaseManager: ObservableObject {
             .value
     }
     
+    func fetchMessages(chatId: UUID, n: Int) async throws -> [Message] {
+        return try await client
+            .from("messages")
+            .select()
+            .eq("chat_id", value: chatId)
+            .order("created_at", ascending: false)
+            .limit(n)
+            .execute()
+            .value
+    }
+    
     func sendMessage(chatId: UUID, content: String, isNewChat: Bool) async throws {
         let url = URL(string: "https://ipamulxprbpujyspawun.supabase.co/functions/v1/stream-response")!
         var request = URLRequest(url: url)
