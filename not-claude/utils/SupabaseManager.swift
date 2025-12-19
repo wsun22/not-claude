@@ -86,14 +86,30 @@ final class SupabaseManager: ObservableObject {
         try await client.auth.signOut()
     }
     
+    func fetchChats(n: Int) async throws -> [Chat] {
+        return try await client
+            .from("chats")
+            .select()
+            .eq("user_id", value: currentUser?.id)
+            .order("last_updated", ascending: false)
+            .limit(n)
+            .execute()
+            .value
+    }
+    
     func sendMessage(chatId: UUID, content: String, isNewChat: Bool) async throws {
         let url = URL(string: "https://ipamulxprbpujyspawun.supabase.co/functions/v1/stream-response")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let body = ["chatId": chatId.uuidString, "content": content, "isNewChat": String(isNewChat)]
-        request.httpBody = try JSONEncoder().encode(body)
+        let body = [
+            "chatId": chatId.uuidString,
+            "content": content,
+            "isNewChat": isNewChat
+        ] as [String : Any]
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
         
         let (data, _) = try await URLSession.shared.data(for: request)
     }

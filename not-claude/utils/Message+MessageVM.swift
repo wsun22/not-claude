@@ -9,18 +9,26 @@ import Foundation
 import Combine
 import SwiftUI
 
-enum Role: String {
+enum Role: String, Decodable {
     case system
     case user
     case assistant
 }
 
-struct Message {
+struct Message: Decodable {
     let id: UUID
     let chatId: UUID
     let role: Role
     let content: String
     let createdAt: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case chatId = "chat_id"
+        case role
+        case content
+        case createdAt = "created_at"
+    }
     
     init(id: UUID = UUID(),
          chatId: UUID,
