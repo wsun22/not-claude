@@ -1,42 +1,13 @@
 //
-//  Chat+ChatViewModel.swift
+//  ChatViewModel.swift
 //  not-claude
 //
-//  Created by William Sun on 11/18/25.
+//  Created by William Sun on 12/19/25.
 //
 
-import Foundation
 import Combine
 import SwiftUI
 import Supabase
-
-struct Chat: Decodable {
-    let id: UUID
-    let userId: UUID
-    var name: String?
-    let createdAt: Date
-    var lastUpdated: Date
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case userId = "user_id"
-        case name
-        case createdAt = "created_at"
-        case lastUpdated = "last_updated"
-    }
-    
-    init(id: UUID = UUID(),
-         userId: UUID,
-         name: String? = nil,
-         createdAt: Date = Date(),
-         lastUpdated: Date = Date()) {
-        self.id = id
-        self.userId = userId
-        self.name = name
-        self.createdAt = createdAt
-        self.lastUpdated = lastUpdated
-    }
-}
 
 final class ChatViewModel: ObservableObject {
     @Published var chats: [Chat] = []
