@@ -22,7 +22,7 @@ struct ContentView: View {
         case .chat(let chat, let isNewChat):
             ChatView(showKeyboard: $showKeyboard,
                      chat: chat,
-                     lastOffset: lastOffset,
+                     offset: offset,
                      isNewChat: isNewChat,
                      chatVM: chatVM)
             .id(chat.id) // use chat.id as the view identity

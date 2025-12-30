@@ -13,19 +13,19 @@ struct ChatView: View {
     @State private var isNewChat: Bool
     
     private let chat: Chat
-    private let lastOffset: CGFloat // i dont remember why i want this ngl
+    private let offset: CGFloat // i dont remember why i want this ngl
     
     @StateObject private var messageVM: MessageViewModel
     @ObservedObject private var chatVM: ChatViewModel
     
     init(showKeyboard: FocusState<Bool>.Binding,
          chat: Chat,
-         lastOffset: CGFloat,
+         offset: CGFloat,
          isNewChat: Bool,
          chatVM: ChatViewModel) {
         self._showKeyboard = showKeyboard
         self.chat = chat
-        self.lastOffset = lastOffset
+        self.offset = offset
         self._isNewChat = State(initialValue: isNewChat)
         self._messageVM = StateObject(wrappedValue: MessageViewModel(chat: chat, isNewChat: isNewChat))
         self.chatVM = chatVM
@@ -69,7 +69,7 @@ struct ChatView: View {
                     showKeyboard = true
                 }
             }
-            .allowsHitTesting(lastOffset == 0)
+            .allowsHitTesting(offset == 0)
         }
     }
 }
@@ -136,12 +136,12 @@ private struct InputSection: View {
             if isNewChat {
                 chatVM.addTempChat(chat)
             }
-            await messageVM.sendMessage(content: trimmed, isNewChat: isNewChat)
+//            await messageVM.sendMessage(content: trimmed, isNewChat: isNewChat)
             
             if isNewChat {
                 // handle polling
                 isNewChat = false
-                await chatVM.pollForTitle(chat.id)
+//                await chatVM.pollForTitle(chat.id)
             }
         }
     }
@@ -169,7 +169,7 @@ private struct NewChatView: View {
     
     ChatView(showKeyboard: $showKeyboard,
              chat: chat,
-             lastOffset: 0,
+             offset: 0,
              isNewChat: true,
              chatVM: chatVM)
 }

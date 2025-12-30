@@ -22,6 +22,13 @@ struct SidebarView: View {
             AppColors.backgroundSecondary.ignoresSafeArea()
             
             VStack {
+                ScrollView {
+                    ForEach(chatVM.chats) { chat in
+                        Text(chat.name ?? "Untitled")
+                            .foregroundStyle(.white)
+                    }
+                }
+                
                 Button {
                     topView = .chat(Chat(userId: UUID()), true)
                     withAnimation {
