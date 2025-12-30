@@ -10,13 +10,24 @@ import SwiftUI
 
 struct SettingsView: View {
     @Binding var showSettingsView: Bool
+    @EnvironmentObject var supabase: SupabaseManager
     
     var body: some View {
         ZStack {
             AppColors.backgroundPrimary.ignoresSafeArea()
             
             VStack {
-                
+                Button {
+                    Task {
+                        do {
+                            try await supabase.signOut()
+                        } catch {
+                            print("Error: \(error)")
+                        }
+                    }
+                } label: {
+                    Text("sign out")
+                }
             }
         }
     }
@@ -24,5 +35,7 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView(showSettingsView: .constant(true))
+        .environmentObject(SupabaseManager())
+
 }
 

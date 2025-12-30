@@ -38,31 +38,18 @@ struct SidebarView: View {
                             .foregroundStyle(.white)
                     }
                 }
-                
-                
-                Button {
-                    Task {
-                        do {
-                            try await supabase.signOut()
-                        } catch {
-                            print("Error: \(error)")
-                        }
-                    }
-                } label: {
-                    Text("sign out")
-                }
             }
             .frame(maxWidth: .infinity)
             .padding()
             .safeAreaInset(edge: .bottom) {
                 BottomAreaView(
                     topView: $topView,
-                    offset: $offset,
-                    lastOffset: $lastOffset,
-                    showSettingsView: $showSettingsView)
-                .padding()
+                offset: $offset,
+                lastOffset: $lastOffset,
+                showSettingsView: $showSettingsView)
+                    .padding()
             }
-            //        .border(.red, width: 2)
+    //        .border(.red, width: 2)
         }
     }
 }
@@ -94,7 +81,7 @@ private struct BottomAreaView: View {
             } label: {
                 Text("New Chat")
             }
-            
+
         }
     }
 }

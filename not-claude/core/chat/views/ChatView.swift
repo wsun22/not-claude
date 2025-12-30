@@ -133,6 +133,7 @@ private struct InputSection: View {
         showKeyboard = false
         
         Task {
+            print("--ChatView/handleUserContent(): task started")
             if isNewChat {
                 chatVM.addTempChat(chat)
             }
@@ -143,6 +144,7 @@ private struct InputSection: View {
                 isNewChat = false
 //                await chatVM.pollForTitle(chat.id)
             }
+            print("--ChatView/handleUserContent(): task completed")
         }
     }
 }
