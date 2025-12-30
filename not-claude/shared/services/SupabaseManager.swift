@@ -22,7 +22,7 @@ final class SupabaseManager: ObservableObject {
     @Published var currentUser: User?
     @Published var isCheckingAuth: Bool = true
     
-    private init() {
+    init() {
         observeAuthStateChanges()
     }
     

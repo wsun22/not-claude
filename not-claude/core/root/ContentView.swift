@@ -16,6 +16,8 @@ struct ContentView: View {
     @StateObject private var chatVM: ChatViewModel = ChatViewModel()
     @State private var topView: TopViews = .chat(Chat(userId: UUID()), true)
     
+    @State private var showSettingsView: Bool = false
+    
     @ViewBuilder
     private var topScreen: some View {
         switch topView {
@@ -52,6 +54,7 @@ struct ContentView: View {
                 SidebarView(topView: $topView,
                             offset: $offset,
                             lastOffset: $lastOffset,
+                            showSettingsView: $showSettingsView,
                             chatVM: chatVM)
                 .frame(width: bottomViewWidth)
                 .gesture(handleRtlDrag(size: size,
@@ -74,6 +77,9 @@ struct ContentView: View {
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
                     .onTapGesture { handleTap(isTopOffset: isTopOffset) }
+            }
+            .sheet(isPresented: $showSettingsView) {
+                SettingsView(showSettingsView: $showSettingsView)
             }
             .ignoresSafeArea()
         }

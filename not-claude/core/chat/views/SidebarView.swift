@@ -12,34 +12,15 @@ struct SidebarView: View {
     @Binding var topView: TopViews
     @Binding var offset: CGFloat
     @Binding var lastOffset: CGFloat
-    
+    @Binding var showSettingsView: Bool
     @ObservedObject var chatVM: ChatViewModel
-    
     @EnvironmentObject var supabase: SupabaseManager
     
     var body: some View {
         ZStack {
             AppColors.backgroundSecondary.ignoresSafeArea()
             
-            VStack {
-                ScrollView {
-                    ForEach(chatVM.chats) { chat in
-                        Text(chat.name ?? "Untitled")
-                            .foregroundStyle(.white)
-                    }
-                }
-                
-                Button {
-                    topView = .chat(Chat(userId: UUID()), true)
-                    withAnimation {
-                        offset = 0
-                        lastOffset = 0
-                    }
-                    haptic(.medium)
-                } label: {
-                    Text("tap for chat view")
-                }
-                
+            VStack(alignment: .leading) {
                 Button {
                     topView = .test
                     withAnimation {
@@ -50,7 +31,15 @@ struct SidebarView: View {
                 } label: {
                     Text("tap for test screen")
                 }
-                                
+                
+                ScrollView {
+                    ForEach(chatVM.chats) { chat in
+                        Text(chat.name ?? "Untitled")
+                            .foregroundStyle(.white)
+                    }
+                }
+                
+                
                 Button {
                     Task {
                         do {
@@ -63,7 +52,60 @@ struct SidebarView: View {
                     Text("sign out")
                 }
             }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .safeAreaInset(edge: .bottom) {
+                BottomAreaView(
+                    topView: $topView,
+                    offset: $offset,
+                    lastOffset: $lastOffset,
+                    showSettingsView: $showSettingsView)
+                .padding()
+            }
+            //        .border(.red, width: 2)
         }
     }
 }
 
+private struct BottomAreaView: View {
+    @Binding var topView: TopViews
+    @Binding var offset: CGFloat
+    @Binding var lastOffset: CGFloat
+    @Binding var showSettingsView: Bool
+    
+    var body: some View {
+        HStack {
+            Button {
+                showSettingsView = true
+            } label: {
+                Text("Settings")
+                    .foregroundStyle(.white)
+            }
+            
+            Spacer()
+            
+            Button {
+                topView = .chat(Chat(userId: UUID()), true)
+                withAnimation {
+                    offset = 0
+                    lastOffset = 0
+                }
+                haptic(.medium)
+            } label: {
+                Text("New Chat")
+            }
+            
+        }
+    }
+}
+
+#Preview {
+    SidebarView(
+        topView: .constant(.chat(Chat(userId: UUID()), true)),
+        offset: .constant(0),
+        lastOffset: .constant(0),
+        showSettingsView: .constant(false),
+        chatVM: ChatViewModel()
+    )
+    .environmentObject(SupabaseManager())
+}
