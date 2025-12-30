@@ -34,7 +34,7 @@ struct ChatView: View {
     var body: some View {
         GeometryReader { geo in
             let size: CGSize = geo.size
-            let bottomViewWidth: CGFloat = size.width * 0.85
+  //          let bottomViewWidth: CGFloat = size.width * 0.85
             //          let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack {
@@ -46,7 +46,7 @@ struct ChatView: View {
                     
                 }
             }
-            .safeAreaInset(edge: .top) {
+            .overlay(alignment: .top) {
                 Text("hi")
                     .foregroundStyle(.white)
             }

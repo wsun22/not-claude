@@ -50,12 +50,16 @@ struct ContentView: View {
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
+                AppColors.backgroundSecondary.ignoresSafeArea()
+                
                 // bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
                             offset: $offset,
                             lastOffset: $lastOffset,
                             showSettingsView: $showSettingsView,
                             chatVM: chatVM)
+                .padding(.top, geo.safeAreaInsets.top)
+                .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
                 .gesture(handleRtlDrag(size: size,
                                        slideThreshold: slideThreshold,
@@ -70,7 +74,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 45)
                             .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
                     )
-                    .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
+         //           .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
                     .offset(x: min(max(offset, 0), bottomViewWidth))
                     .gesture(handleLtrDrag(size: size,
                                            slideThreshold: slideThreshold,

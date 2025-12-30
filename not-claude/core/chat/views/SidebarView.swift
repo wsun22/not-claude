@@ -17,39 +17,48 @@ struct SidebarView: View {
     @EnvironmentObject var supabase: SupabaseManager
     
     var body: some View {
-        ZStack {
-            AppColors.backgroundSecondary.ignoresSafeArea()
-            
-            VStack(alignment: .leading) {
-                Button {
-                    topView = .test
-                    withAnimation {
-                        offset = 0
-                        lastOffset = 0
-                    }
-                    haptic(.medium)
-                } label: {
-                    Text("tap for test screen")
-                }
+        GeometryReader { geo in
+            ZStack {
+                AppColors.backgroundSecondary.ignoresSafeArea()
                 
-                ScrollView {
-                    ForEach(chatVM.chats) { chat in
-                        Text(chat.name ?? "Untitled")
-                            .foregroundStyle(.white)
+                VStack(alignment: .leading) {
+                    ScrollView {
+                        Spacer()
+                            .frame(height: geo.safeAreaInsets.top)
+                        
+                        Button {
+                            topView = .test
+                            withAnimation {
+                                offset = 0
+                                lastOffset = 0
+                            }
+                            haptic(.medium)
+                        } label: {
+                            Text("tap for test screen")
+                        }
+                        
+                        ForEach(chatVM.chats) { chat in
+                            Text(chat.name ?? "Untitled")
+                                .foregroundStyle(.white)
+                        }
+                        
                     }
+                    .frame(maxWidth: .infinity)
+                    .border(.red, width: 2)
+                }
+                .overlay(alignment: .top) {
+                    Text("hi")
+                }
+                .overlay(alignment: .bottom) {
+                    BottomAreaView(
+                        topView: $topView,
+                        offset: $offset,
+                        lastOffset: $lastOffset,
+                        showSettingsView: $showSettingsView)
+          //          .padding(.bottom, geo.safeAreaInsets.bottom)
+                    .padding(.horizontal, 36)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .safeAreaInset(edge: .bottom) {
-                BottomAreaView(
-                    topView: $topView,
-                offset: $offset,
-                lastOffset: $lastOffset,
-                showSettingsView: $showSettingsView)
-                    .padding()
-            }
-    //        .border(.red, width: 2)
         }
     }
 }
@@ -81,7 +90,7 @@ private struct BottomAreaView: View {
             } label: {
                 Text("New Chat")
             }
-
+            
         }
     }
 }
