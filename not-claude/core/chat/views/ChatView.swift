@@ -40,6 +40,7 @@ struct ChatView: View {
         }
         .overlay(alignment: .top) {
             Text("hi")
+                .padding(.top, 8)
                 .foregroundStyle(.white)
         }
         .overlay(alignment: .bottom) {
@@ -53,11 +54,9 @@ struct ChatView: View {
             .padding(.bottom, showKeyboard ? 12 : 0)
         }
         .onTapGesture {
-            print("[ChatView] onTapGesture called")
             showKeyboard = false
         }
-        .onAppear { // open keyboard
-            print("ChatView on appear")
+        .onAppear { /// open keyboard
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showKeyboard = true
             }
@@ -80,7 +79,7 @@ private struct InputSection: View {
                 .font(.styreneB(fontStyle: .headline))
                 .foregroundStyle(AppColors.textPrimary)
                 .tracking(-0.85)
-                .tint(AppColors.textTertiary) // control cursor color
+                .tint(AppColors.textTertiary) /// control cursor color
                 .focused($showKeyboard)
                 .padding(.vertical, 16)
                 .lineLimit(5)
@@ -132,7 +131,7 @@ private struct InputSection: View {
             //            await messageVM.sendMessage(content: trimmed, isNewChat: isNewChat)
             
             if isNewChat {
-                // handle polling
+                /// handle polling
                 isNewChat = false
                 //                await chatVM.pollForTitle(chat.id)
             }

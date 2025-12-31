@@ -20,11 +20,10 @@ struct SidebarView: View {
         GeometryReader { geo in
             ZStack {
                 AppColors.backgroundSecondary.ignoresSafeArea()
-                
+
                 VStack {
                     ScrollView {
-                        Spacer()
-                            .frame(height: geo.safeAreaInsets.top)
+                        Spacer().frame(height: geo.safeAreaInsets.top)
                         
                         Button {
                             topView = .test
@@ -43,12 +42,15 @@ struct SidebarView: View {
                         }
                         
                     }
-                    .frame(maxWidth: .infinity)
-            //        .border(.red, width: 2)
-                }
 
-                .overlay(alignment: .top) {
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+    //            .border(.red, width: 2)
+                .overlay(alignment: .topLeading) {
                     tienne("notClaude", fontStyle: .title)
+                        .padding(.top, 8)
+                        .padding(.horizontal, 16)
                 }
                 .overlay(alignment: .bottom) {
                     BottomAreaView(
@@ -60,7 +62,6 @@ struct SidebarView: View {
                     .padding(.horizontal, 36)
                 }
             }
-            .border(.red, width: 2)
 
         }
     }

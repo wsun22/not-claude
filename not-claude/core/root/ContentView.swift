@@ -50,7 +50,7 @@ struct ContentView: View {
             let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
-                AppColors.backgroundSecondary.ignoresSafeArea()
+                AppColors.backgroundSecondary
                 
                 /// bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
@@ -73,7 +73,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 45)
                             .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
                     )
-                    .overlay { // todo: add diming
+                    .overlay { /// todo: dim relative to offset
                         if isTopOffset {
                             Color.clear
                                 .contentShape(Rectangle())
