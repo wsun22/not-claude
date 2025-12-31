@@ -13,8 +13,9 @@ enum TopViews {
 }
 
 struct ContentView: View {
+    @EnvironmentObject var supabase: SupabaseManager
     @StateObject private var chatVM: ChatViewModel = ChatViewModel()
-    @State private var topView: TopViews = .chat(Chat(userId: UUID()), true)
+    @State private var topView: TopViews = .chat(Chat(userId: UUID()), true) /// need to use supabase.currentUser.id instead
     
     @State private var showSettingsView: Bool = false
     
@@ -26,7 +27,7 @@ struct ContentView: View {
                      chat: chat,
                      isNewChat: isNewChat,
                      chatVM: chatVM)
-            .id(chat.id) // use chat.id as the view identity
+            .id(chat.id) /// use chat.id as the view identity
         case .test:
             ZStack {
                 Color.red.ignoresSafeArea()
@@ -39,7 +40,7 @@ struct ContentView: View {
     
     @State private var offset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
-    @FocusState private var showKeyboard: Bool // after offsetting top view, why does it toggle?
+    @FocusState private var showKeyboard: Bool
     
     var body: some View {
         GeometryReader { geo in
@@ -51,7 +52,7 @@ struct ContentView: View {
             ZStack(alignment: .leading) {
                 AppColors.backgroundSecondary.ignoresSafeArea()
                 
-                // bottom screen--is always SidebarView
+                /// bottom screen--is always SidebarView
                 SidebarView(topView: $topView,
                             offset: $offset,
                             lastOffset: $lastOffset,
@@ -64,7 +65,6 @@ struct ContentView: View {
                                        slideThreshold: slideThreshold,
                                        bottomViewWidth: bottomViewWidth))
                 
-                // maybe when top is offset, overlay something that makes topScreen ontap stuff useless, and for ui side dim/zoom out slightly
                 topScreen
                     .padding(.top, geo.safeAreaInsets.top)
                     .padding(.bottom, geo.safeAreaInsets.bottom)
@@ -73,7 +73,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 45)
                             .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
                     )
-                    .overlay {
+                    .overlay { // todo: add diming
                         if isTopOffset {
                             Color.clear
                                 .contentShape(Rectangle())
@@ -97,6 +97,7 @@ struct ContentView: View {
     }
     
     /// handles left to right drags for the top screen. needs min maxing to bind, bc sometimes top screen moves too far right, can see white background to right of sidebarview
+    /// todo: only relatively horizontal drag
     private func handleLtrDrag(size: CGSize,
                                slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat,
@@ -128,6 +129,7 @@ struct ContentView: View {
     }
     
     /// handles right to left drags for bottom screen. needs min max, bc sometimes screen moves too far left, can see white background on right
+    /// todo: only relatively horizontal dragss. also, weird behavior when dragging AND tapping top screen
     private func handleRtlDrag(size: CGSize,
                                slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat) -> some Gesture {
@@ -165,4 +167,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(SupabaseManager())
 }
