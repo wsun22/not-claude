@@ -65,7 +65,7 @@ struct ChatView: View {
                 showKeyboard = true
             }
         }
-        .allowsHitTesting(offset == 0)
+    //    .allowsHitTesting(offset == 0)
     }
     
 }

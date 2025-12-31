@@ -21,7 +21,7 @@ final class MessageViewModel: ObservableObject {
         if !isNewChat {
             print("[MessageViewModel] isNewChat: \(isNewChat) => fetching!")
             Task {
-                await fetchMessages(for: chat)
+//                await fetchMessages(for: chat)
             }
         }
     }

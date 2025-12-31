@@ -22,6 +22,7 @@ final class SupabaseManager: ObservableObject {
     @Published var currentUser: User?
     @Published var isCheckingAuth: Bool = true
     
+    // make this private in prod
     init() {
         observeAuthStateChanges()
     }
