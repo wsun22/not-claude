@@ -74,13 +74,27 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 45)
                             .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
                     )
+                    .overlay {
+                        if isTopOffset {
+                            Color.clear
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    print("tapped overlay")
+                                    handleTap(isTopOffset: isTopOffset)
+                                }
+                        }
+                    }
          //           .background(AppColors.backgroundSecondary) // fill gap left by rounding corenrs
                     .offset(x: min(max(offset, 0), bottomViewWidth))
                     .gesture(handleLtrDrag(size: size,
                                            slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
-                    .onTapGesture { handleTap(isTopOffset: isTopOffset) }
+                    .onTapGesture {
+
+                        handleTap(isTopOffset: isTopOffset)
+                        
+                    }
             }
             .sheet(isPresented: $showSettingsView) {
                 SettingsView(showSettingsView: $showSettingsView)
@@ -100,6 +114,7 @@ struct ContentView: View {
                 offset = min(max(newOffset, 0), bottomViewWidth)
             }
             .onEnded { value in
+                print("🔴 Drag onEnded - translation: \(value.translation.width), isTopOffset: \(isTopOffset)")
                 if value.translation.width > slideThreshold {
                     withAnimation {
                         offset = bottomViewWidth
@@ -107,10 +122,20 @@ struct ContentView: View {
                         showKeyboard = false
                     }
                     haptic(.medium)
-                } else if !isTopOffset { // if top screen is not already offset
+                } else if value.translation.width < -slideThreshold {
+                    withAnimation {
+                        offset = 0
+                        lastOffset = 0
+                    }
+                    haptic(.medium)
+                } else if !isTopOffset {
                     withAnimation {
                         lastOffset = 0
                         offset = 0
+                    }
+                } else {
+                    withAnimation {
+                        offset = lastOffset
                     }
                 }
             }
