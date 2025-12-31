@@ -93,8 +93,6 @@ struct ContentView: View {
                 SettingsView(showSettingsView: $showSettingsView)
             }
             .ignoresSafeArea()
-            .onChange(of: showKeyboard) { print("showKeyboard is \(showKeyboard)")}
-
         }
     }
     
@@ -140,14 +138,11 @@ struct ContentView: View {
             }
             .onEnded { value in
                 if abs(value.translation.width) > slideThreshold {
-                    print("[ContentView] RTL drag - closing sidebar, showKeyboard before: \(showKeyboard)")
                     withAnimation {
                         offset = 0
                         lastOffset = 0
                     }
                     haptic(.medium)
-                    showKeyboard = false  // Explicitly prevent keyboard from reopening
-                    print("[ContentView] RTL drag - set showKeyboard to false")
                 } else {
                     withAnimation {
                         offset = lastOffset
@@ -163,7 +158,6 @@ struct ContentView: View {
                 offset = 0
                 lastOffset = 0
             }
-            showKeyboard = false  // Explicitly prevent keyboard
             haptic(.medium)
         }
     }
