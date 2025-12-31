@@ -13,19 +13,16 @@ struct ChatView: View {
     @State private var isNewChat: Bool
     
     private let chat: Chat
-    private let offset: CGFloat // i dont remember why i want this ngl
     
     @StateObject private var messageVM: MessageViewModel
     @ObservedObject private var chatVM: ChatViewModel
     
     init(showKeyboard: FocusState<Bool>.Binding,
          chat: Chat,
-         offset: CGFloat,
          isNewChat: Bool,
          chatVM: ChatViewModel) {
         self._showKeyboard = showKeyboard
         self.chat = chat
-        self.offset = offset
         self._isNewChat = State(initialValue: isNewChat)
         self._messageVM = StateObject(wrappedValue: MessageViewModel(chat: chat, isNewChat: isNewChat))
         self.chatVM = chatVM
@@ -65,7 +62,6 @@ struct ChatView: View {
                 showKeyboard = true
             }
         }
-    //    .allowsHitTesting(offset == 0)
     }
     
 }
@@ -167,7 +163,6 @@ private struct NewChatView: View {
     
     ChatView(showKeyboard: $showKeyboard,
              chat: chat,
-             offset: 0,
              isNewChat: true,
              chatVM: chatVM)
 }
