@@ -61,7 +61,7 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-                .gesture(handleRtlDrag(size: size,
+                .highPriorityGesture(handleRtlDrag(size: size,
                                        slideThreshold: slideThreshold,
                                        bottomViewWidth: bottomViewWidth))
                 
