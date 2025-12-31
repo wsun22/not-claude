@@ -21,7 +21,7 @@ struct SidebarView: View {
             ZStack {
                 AppColors.backgroundSecondary.ignoresSafeArea()
                 
-                VStack(alignment: .leading) {
+                VStack {
                     ScrollView {
                         Spacer()
                             .frame(height: geo.safeAreaInsets.top)
@@ -44,10 +44,11 @@ struct SidebarView: View {
                         
                     }
                     .frame(maxWidth: .infinity)
-                    .border(.red, width: 2)
+            //        .border(.red, width: 2)
                 }
+
                 .overlay(alignment: .top) {
-                    Text("hi")
+                    tienne("notClaude", fontStyle: .title)
                 }
                 .overlay(alignment: .bottom) {
                     BottomAreaView(
@@ -59,6 +60,8 @@ struct SidebarView: View {
                     .padding(.horizontal, 36)
                 }
             }
+            .border(.red, width: 2)
+
         }
     }
 }

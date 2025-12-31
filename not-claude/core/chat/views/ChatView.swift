@@ -32,46 +32,41 @@ struct ChatView: View {
     }
     
     var body: some View {
-        GeometryReader { geo in
-            let size: CGSize = geo.size
-  //          let bottomViewWidth: CGFloat = size.width * 0.85
-            //          let isTopOffset: Bool = lastOffset == bottomViewWidth
+        ZStack {
+            AppColors.backgroundPrimary.ignoresSafeArea()
             
-            ZStack {
-                AppColors.backgroundPrimary.ignoresSafeArea()
+            if isNewChat {
+                NewChatView()
+            } else {
                 
-                if isNewChat {
-                    NewChatView()
-                } else {
-                    
-                }
             }
-            .overlay(alignment: .top) {
-                Text("hi")
-                    .foregroundStyle(.white)
-            }
-            .safeAreaInset(edge: .bottom) {
-                InputSection(userContent: $userContent,
-                             showKeyboard: $showKeyboard,
-                             isNewChat: $isNewChat,
-                             chatVM: chatVM,
-                             messageVM: messageVM,
-                             chat: chat)
-                .padding(.horizontal, 12)
-                .padding(.bottom, showKeyboard ? 12 : 0)
-            }
-            .onTapGesture {
-                print("[ChatView] onTapGesture called")
-                showKeyboard = false
-            }
-            .onAppear { // open keyboard
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    showKeyboard = true
-                }
-            }
-            .allowsHitTesting(offset == 0)
         }
+        .overlay(alignment: .top) {
+            Text("hi")
+                .foregroundStyle(.white)
+        }
+        .overlay(alignment: .bottom) {
+            InputSection(userContent: $userContent,
+                         showKeyboard: $showKeyboard,
+                         isNewChat: $isNewChat,
+                         chatVM: chatVM,
+                         messageVM: messageVM,
+                         chat: chat)
+            .padding(.horizontal, 12)
+            .padding(.bottom, showKeyboard ? 12 : 0)
+        }
+        .onTapGesture {
+            print("[ChatView] onTapGesture called")
+            showKeyboard = false
+        }
+        .onAppear { // open keyboard
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                showKeyboard = true
+            }
+        }
+        .allowsHitTesting(offset == 0)
     }
+    
 }
 
 private struct InputSection: View {
@@ -137,12 +132,12 @@ private struct InputSection: View {
             if isNewChat {
                 chatVM.addTempChat(chat)
             }
-//            await messageVM.sendMessage(content: trimmed, isNewChat: isNewChat)
+            //            await messageVM.sendMessage(content: trimmed, isNewChat: isNewChat)
             
             if isNewChat {
                 // handle polling
                 isNewChat = false
-//                await chatVM.pollForTitle(chat.id)
+                //                await chatVM.pollForTitle(chat.id)
             }
             print("--ChatView/handleUserContent(): task completed")
         }
