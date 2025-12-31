@@ -13,7 +13,7 @@ enum Role: String, Codable {
     case assistant
 }
 
-struct Message: Codable {
+struct Message: Codable, Identifiable {
     let id: UUID
     let chatId: UUID
     let role: Role

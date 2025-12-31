@@ -16,9 +16,9 @@ final class ChatViewModel: ObservableObject {
     private var fetchNChats: Int = 10
     
     init() {
-        Task {
-            await fetchChats()
-        }
+//        Task {
+//            await fetchChats()
+//        }
     }
     
     private func fetchChats() async {

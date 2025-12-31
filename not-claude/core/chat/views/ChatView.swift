@@ -60,6 +60,7 @@ struct ChatView: View {
             showKeyboard = false
         }
         .onAppear { // open keyboard
+            print("ChatView on appear")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showKeyboard = true
             }
