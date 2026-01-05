@@ -83,7 +83,7 @@ struct ContentView: View {
                                 }
                         }
                     }
-                    .offset(x: min(max(offset, 0), bottomViewWidth))
+                    .offset(x: offset)
                     .gesture(handleLtrDrag(size: size,
                                            slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth,
@@ -104,10 +104,22 @@ struct ContentView: View {
                                isTopOffset: Bool) -> some Gesture {
         DragGesture()
             .onChanged { value in
-                let newOffset = lastOffset + value.translation.width
-                offset = min(max(newOffset, 0), bottomViewWidth)
+                let dragThreshold: CGFloat = size.width * 0.1
+
+                if offset < dragThreshold {
+                    // require 2x more horizontal than vertical movement
+                    if abs(value.translation.width) > abs(value.translation.height) * 2 {
+                        let newOffset = lastOffset + value.translation.width
+                        offset = min(max(newOffset, 0), bottomViewWidth)
+                    }
+                } else {
+                    // once past threshold, allow any direction
+                    let newOffset = lastOffset + value.translation.width
+                    offset = min(max(newOffset, 0), bottomViewWidth)
+                }
             }
             .onEnded { value in
+                guard offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
                 if value.translation.width > slideThreshold {
                     withAnimation {
                         offset = bottomViewWidth

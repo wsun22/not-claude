@@ -40,9 +40,7 @@ struct SidebarView: View {
                             Text(chat.name ?? "Untitled")
                                 .foregroundStyle(.white)
                         }
-                        
                     }
-
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
@@ -62,7 +60,6 @@ struct SidebarView: View {
                     .padding(.horizontal, 36)
                 }
             }
-
         }
     }
 }
