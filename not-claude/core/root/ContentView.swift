@@ -147,10 +147,20 @@ struct ContentView: View {
                                bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
             .onChanged { value in
-                let newOffset = lastOffset + value.translation.width
-                offset = min(max(newOffset, 0), bottomViewWidth)
+                let dragThreshold: CGFloat = bottomViewWidth * 0.9
+                
+                if offset > dragThreshold {
+                    if abs(value.translation.width) > abs(value.translation.height) * 3 {
+                        let newOffset = lastOffset + value.translation.width
+                        offset = min(max(newOffset, 0), bottomViewWidth)
+                    }
+                } else {
+                    let newOffset = lastOffset + value.translation.width
+                    offset = min(max(newOffset, 0), bottomViewWidth)
+                }
             }
             .onEnded { value in
+                guard offset != lastOffset else { return }
                 if abs(value.translation.width) > slideThreshold {
                     withAnimation {
                         offset = 0
