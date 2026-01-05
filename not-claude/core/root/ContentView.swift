@@ -61,7 +61,7 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-                .highPriorityGesture(handleRtlDrag(size: size,
+                .gesture(handleRtlDrag(size: size,
                                        slideThreshold: slideThreshold,
                                        bottomViewWidth: bottomViewWidth))
                 
@@ -120,6 +120,7 @@ struct ContentView: View {
             }
             .onEnded { value in
                 guard offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
+                
                 if value.translation.width > slideThreshold {
                     withAnimation {
                         offset = bottomViewWidth
@@ -150,7 +151,7 @@ struct ContentView: View {
                 let dragThreshold: CGFloat = bottomViewWidth * 0.9
                 
                 if offset > dragThreshold {
-                    if abs(value.translation.width) > abs(value.translation.height) * 3 {
+                    if abs(value.translation.width) > abs(value.translation.height) * 2 {
                         let newOffset = lastOffset + value.translation.width
                         offset = min(max(newOffset, 0), bottomViewWidth)
                     }
@@ -161,6 +162,7 @@ struct ContentView: View {
             }
             .onEnded { value in
                 guard offset != lastOffset else { return }
+                
                 if abs(value.translation.width) > slideThreshold {
                     withAnimation {
                         offset = 0
