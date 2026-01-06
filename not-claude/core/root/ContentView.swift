@@ -26,6 +26,7 @@ struct ContentView: View {
             ChatView(showKeyboard: $showKeyboard,
                      offset: $offset,
                      lastOffset: $lastOffset,
+                     bottomViewWidth: bottomViewWidth,
                      chat: chat,
                      isNewChat: isNewChat,
                      chatVM: chatVM)

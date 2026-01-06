@@ -13,6 +13,7 @@ struct ChatView: View {
     @State private var isNewChat: Bool
     @Binding var offset: CGFloat
     @Binding var lastOffset: CGFloat
+    private let bottomViewWidth: CGFloat
     
     private let chat: Chat
     
@@ -22,12 +23,14 @@ struct ChatView: View {
     init(showKeyboard: FocusState<Bool>.Binding,
          offset: Binding<CGFloat>,
          lastOffset: Binding<CGFloat>,
+         bottomViewWidth: CGFloat,
          chat: Chat,
          isNewChat: Bool,
          chatVM: ChatViewModel) {
         self._showKeyboard = showKeyboard
         self._offset = offset
         self._lastOffset = lastOffset
+        self.bottomViewWidth = bottomViewWidth
         self.chat = chat
         self._isNewChat = State(initialValue: isNewChat)
         self._messageVM = StateObject(wrappedValue: MessageViewModel(chat: chat, isNewChat: isNewChat))
@@ -194,6 +197,7 @@ private struct NewChatView: View {
     ChatView(showKeyboard: $showKeyboard,
              offset: $offset,
              lastOffset: $lastOffset,
+             bottomViewWidth: 0,
              chat: chat,
              isNewChat: true,
              chatVM: chatVM)
