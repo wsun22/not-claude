@@ -47,7 +47,7 @@ struct ChatView: View {
                 
             }
         }
-        .overlay(alignment: .top) {
+        .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
             TopSection(offset: $offset,
                        lastOffset: $lastOffset,
                        bottomViewWidth: bottomViewWidth)

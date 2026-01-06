@@ -66,7 +66,6 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-                .simultaneousGesture(handleRtlDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
                 
                 topScreen(bottomViewWidth: bottomViewWidth)
                     .padding(.top, geo.safeAreaInsets.top)
@@ -91,6 +90,7 @@ struct ContentView: View {
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
             }
+            .simultaneousGesture(handleRtlDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
             .sheet(isPresented: $showSettingsView) {
                 SettingsView(showSettingsView: $showSettingsView)
             }
@@ -105,8 +105,11 @@ struct ContentView: View {
                                isTopOffset: Bool) -> some Gesture {
         DragGesture()
             .onChanged { value in
+                guard value.translation.width > 0 && offset != bottomViewWidth else { return }
+                
                 let dragThreshold: CGFloat = bottomViewWidth * 0.1
-
+                print("ltr dragging")
+                
                 if offset < dragThreshold {
                     // require 2x more horizontal than vertical movement
                     if abs(value.translation.width) > abs(value.translation.height) * 2 {
@@ -118,10 +121,12 @@ struct ContentView: View {
                     let newOffset = lastOffset + value.translation.width
                     offset = min(max(newOffset, 0), bottomViewWidth)
                 }
+                
             }
             .onEnded { value in
                 guard offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
-                
+                print("ltr drag ended")
+
                 if value.translation.width > slideThreshold {
                     withAnimation {
                         offset = bottomViewWidth
@@ -148,7 +153,9 @@ struct ContentView: View {
                                bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
             .onChanged { value in
+                guard value.translation.width < 0 else { return }
                 let dragThreshold: CGFloat = bottomViewWidth * 0.9
+                print("--rtl dragging")
                 
                 if offset > dragThreshold {
                     if abs(value.translation.width) > abs(value.translation.height) * 2 {
@@ -161,6 +168,9 @@ struct ContentView: View {
                 }
             }
             .onEnded { value in
+                guard value.translation.width < 0 else { return }
+
+                print("--rtl drag ended")
                 guard offset != lastOffset else { return }
                 
                 if abs(value.translation.width) > slideThreshold {
