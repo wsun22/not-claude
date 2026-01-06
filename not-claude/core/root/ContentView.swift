@@ -43,6 +43,7 @@ struct ContentView: View {
     
     @State private var offset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
+    @State private var isDragging: Bool = false
     @FocusState private var showKeyboard: Bool
     
     var body: some View {
@@ -66,6 +67,7 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
+      //          .allowsHitTesting(offset == bottomViewWidth)
                 
                 topScreen(bottomViewWidth: bottomViewWidth)
                     .padding(.top, geo.safeAreaInsets.top)
@@ -80,7 +82,6 @@ struct ContentView: View {
                             Color.clear
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    print("tapped overlay")
                                     handleTap(isTopOffset: isTopOffset)
                                 }
                         }
@@ -105,10 +106,10 @@ struct ContentView: View {
                                isTopOffset: Bool) -> some Gesture {
         DragGesture()
             .onChanged { value in
+                isDragging = true
                 guard value.translation.width > 0 && offset != bottomViewWidth else { return }
                 
                 let dragThreshold: CGFloat = bottomViewWidth * 0.1
-                print("ltr dragging")
                 
                 if offset < dragThreshold {
                     // require 2x more horizontal than vertical movement
@@ -124,8 +125,8 @@ struct ContentView: View {
                 
             }
             .onEnded { value in
-                guard offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
-                print("ltr drag ended")
+                defer { isDragging = false }
+                guard value.translation.width > 0 && offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
 
                 if value.translation.width > slideThreshold {
                     withAnimation {
@@ -153,9 +154,10 @@ struct ContentView: View {
                                bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
             .onChanged { value in
+                isDragging = true
                 guard value.translation.width < 0 else { return }
+                
                 let dragThreshold: CGFloat = bottomViewWidth * 0.9
-                print("--rtl dragging")
                 
                 if offset > dragThreshold {
                     if abs(value.translation.width) > abs(value.translation.height) * 2 {
@@ -168,10 +170,8 @@ struct ContentView: View {
                 }
             }
             .onEnded { value in
-                guard value.translation.width < 0 else { return }
-
-                print("--rtl drag ended")
-                guard offset != lastOffset else { return }
+                defer { isDragging = false }
+                guard value.translation.width < 0 && offset != lastOffset else { return }
                 
                 if abs(value.translation.width) > slideThreshold {
                     withAnimation {
@@ -189,13 +189,13 @@ struct ContentView: View {
     
     /// handles the tap gesture for top screen when it is offset
     private func handleTap(isTopOffset: Bool) {
-        if isTopOffset {
-            withAnimation {
-                offset = 0
-                lastOffset = 0
-            }
-            haptic(.medium)
+        guard isTopOffset else { return }
+        
+        withAnimation {
+            offset = 0
+            lastOffset = 0
         }
+        haptic(.medium)
     }
 }
 
