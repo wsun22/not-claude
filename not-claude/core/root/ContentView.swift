@@ -20,7 +20,7 @@ struct ContentView: View {
     @State private var showSettingsView: Bool = false
     
     @ViewBuilder
-    private var topScreen: some View {
+    private func topScreen(bottomViewWidth: CGFloat) -> some View {
         switch topView {
         case .chat(let chat, let isNewChat):
             ChatView(showKeyboard: $showKeyboard,
@@ -67,7 +67,7 @@ struct ContentView: View {
                 .frame(width: bottomViewWidth)
                 .simultaneousGesture(handleRtlDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
                 
-                topScreen
+                topScreen(bottomViewWidth: bottomViewWidth)
                     .padding(.top, geo.safeAreaInsets.top)
                     .padding(.bottom, geo.safeAreaInsets.bottom)
                     .cornerRadius(45)
