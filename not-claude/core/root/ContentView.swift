@@ -67,7 +67,7 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-      //          .allowsHitTesting(offset == bottomViewWidth)
+                .allowsHitTesting(!isDragging)
                 
                 topScreen(bottomViewWidth: bottomViewWidth)
                     .padding(.top, geo.safeAreaInsets.top)
@@ -77,25 +77,18 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 45)
                             .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
                     )
-                    .overlay { /// todo: make it relative to offset and bottomViewWidth
-                        if isTopOffset {
-                            Color.clear
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    handleTap(isTopOffset: isTopOffset)
-                                }
-                        }
-                    }
                     .offset(x: offset)
                     .simultaneousGesture(handleLtrDrag(slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
+                    .simultaneousGesture(handleTap(isTopOffset: isTopOffset)) /// is there a way to handle a tap in ltr drag?
             }
             .simultaneousGesture(handleRtlDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
             .sheet(isPresented: $showSettingsView) {
                 SettingsView(showSettingsView: $showSettingsView)
             }
             .ignoresSafeArea()
+            .onChange(of: isDragging) { print(isDragging) }
         }
     }
     
@@ -107,7 +100,7 @@ struct ContentView: View {
         DragGesture()
             .onChanged { value in
                 isDragging = true
-                guard value.translation.width > 0 && offset != bottomViewWidth else { return }
+                guard lastOffset == 0 && value.translation.width > 0 && offset != bottomViewWidth else { return }
                 
                 let dragThreshold: CGFloat = bottomViewWidth * 0.1
                 
@@ -126,7 +119,7 @@ struct ContentView: View {
             }
             .onEnded { value in
                 defer { isDragging = false }
-                guard value.translation.width > 0 && offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
+                guard lastOffset == 0 && value.translation.width > 0 && offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
 
                 if value.translation.width > slideThreshold {
                     withAnimation {
@@ -155,7 +148,7 @@ struct ContentView: View {
         DragGesture()
             .onChanged { value in
                 isDragging = true
-                guard value.translation.width < 0 else { return }
+                guard lastOffset == bottomViewWidth && value.translation.width < 0 else { return }
                 
                 let dragThreshold: CGFloat = bottomViewWidth * 0.9
                 
@@ -171,7 +164,7 @@ struct ContentView: View {
             }
             .onEnded { value in
                 defer { isDragging = false }
-                guard value.translation.width < 0 && offset != lastOffset else { return }
+                guard lastOffset == bottomViewWidth && value.translation.width < 0 && offset != lastOffset else { return }
                 
                 if abs(value.translation.width) > slideThreshold {
                     withAnimation {
@@ -188,14 +181,17 @@ struct ContentView: View {
     }
     
     /// handles the tap gesture for top screen when it is offset
-    private func handleTap(isTopOffset: Bool) {
-        guard isTopOffset else { return }
-        
-        withAnimation {
-            offset = 0
-            lastOffset = 0
-        }
-        haptic(.medium)
+    private func handleTap(isTopOffset: Bool) -> some Gesture {
+        TapGesture()
+            .onEnded {
+                guard isTopOffset && !isDragging else { return }
+
+                withAnimation {
+                    offset = 0
+                    lastOffset = 0
+                }
+                haptic(.medium)
+            }
     }
 }
 

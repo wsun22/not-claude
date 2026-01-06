@@ -83,6 +83,7 @@ private struct TopSection: View {
     var body: some View {
         HStack {
             Button {
+                print("sidebar button tapped")
                 withAnimation {
                     if offset == 0 {
                         offset = bottomViewWidth
@@ -159,9 +160,9 @@ private struct InputSection: View {
     }
     
     private func handleUserContent() {
-        guard !userContent.isEmpty else { return }
-        
         let trimmed: String = userContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        
         userContent = ""
         showKeyboard = false
         
