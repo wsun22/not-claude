@@ -20,10 +20,10 @@ struct SidebarView: View {
         GeometryReader { geo in
             ZStack {
                 AppColors.backgroundSecondary.ignoresSafeArea()
-
-                VStack {
-                    ScrollView {
-                        Spacer().frame(height: geo.safeAreaInsets.top)
+                
+                ScrollView {
+                    VStack {
+                        Spacer().frame(height: geo.safeAreaInsets.top) // this spacing needs to consider the top overlay size
                         
                         Button {
                             topView = .test
@@ -41,10 +41,10 @@ struct SidebarView: View {
                                 .foregroundStyle(.white)
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
-    //            .border(.red, width: 2)
+                .border(.red, width: 2)
                 .overlay(alignment: .topLeading) {
                     tienne("notClaude", fontStyle: .title)
                         .padding(.top, 8)
@@ -56,7 +56,7 @@ struct SidebarView: View {
                         offset: $offset,
                         lastOffset: $lastOffset,
                         showSettingsView: $showSettingsView)
-          //          .padding(.bottom, geo.safeAreaInsets.bottom)
+                    //          .padding(.bottom, geo.safeAreaInsets.bottom)
                     .padding(.horizontal, 36)
                 }
             }
