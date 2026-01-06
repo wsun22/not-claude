@@ -62,9 +62,7 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-                .simultaneousGesture(handleRtlDrag(size: size,
-                                       slideThreshold: slideThreshold,
-                                       bottomViewWidth: bottomViewWidth))
+                .simultaneousGesture(handleRtlDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
                 
                 topScreen
                     .padding(.top, geo.safeAreaInsets.top)
@@ -85,8 +83,7 @@ struct ContentView: View {
                         }
                     }
                     .offset(x: offset)
-                    .simultaneousGesture(handleLtrDrag(size: size,
-                                           slideThreshold: slideThreshold,
+                    .simultaneousGesture(handleLtrDrag(slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
             }
@@ -99,13 +96,12 @@ struct ContentView: View {
     
     /// handles left to right drags for the top screen. needs min maxing to bind, bc sometimes top screen moves too far right, can see white background to right of sidebarview
     /// todo: only relatively horizontal drag
-    private func handleLtrDrag(size: CGSize,
-                               slideThreshold: CGFloat,
+    private func handleLtrDrag(slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat,
                                isTopOffset: Bool) -> some Gesture {
         DragGesture()
             .onChanged { value in
-                let dragThreshold: CGFloat = size.width * 0.1
+                let dragThreshold: CGFloat = bottomViewWidth * 0.1
 
                 if offset < dragThreshold {
                     // require 2x more horizontal than vertical movement
@@ -144,8 +140,7 @@ struct ContentView: View {
     
     /// handles right to left drags for bottom screen. needs min max, bc sometimes screen moves too far left, can see white background on right
     /// todo: only relatively horizontal dragss. also, weird behavior when dragging AND tapping top screen
-    private func handleRtlDrag(size: CGSize,
-                               slideThreshold: CGFloat,
+    private func handleRtlDrag(slideThreshold: CGFloat,
                                bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
             .onChanged { value in
