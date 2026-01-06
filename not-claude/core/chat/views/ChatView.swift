@@ -48,9 +48,11 @@ struct ChatView: View {
             }
         }
         .overlay(alignment: .top) {
-            TopSection(offset: $offset, lastOffset: $lastOffset)
-                .padding(.top, 8)
-                .padding(.horizontal, 16)
+            TopSection(offset: $offset,
+                       lastOffset: $lastOffset,
+                       bottomViewWidth: bottomViewWidth)
+            .padding(.top, 8)
+            .padding(.horizontal, 16)
         }
         .overlay(alignment: .bottom) {
             InputSection(userContent: $userContent,
@@ -76,12 +78,20 @@ struct ChatView: View {
 private struct TopSection: View {
     @Binding var offset: CGFloat
     @Binding var lastOffset: CGFloat
+    let bottomViewWidth: CGFloat
     
     var body: some View {
         HStack {
             Button {
-                offset = 0
-                lastOffset = 0
+                withAnimation {
+                    if offset == 0 {
+                        offset = bottomViewWidth
+                        lastOffset = bottomViewWidth
+                    } else if offset == bottomViewWidth {
+                        offset = 0
+                        lastOffset = 0
+                    }
+                }
             } label: {
                 Text("sidebar")
             }
@@ -193,7 +203,7 @@ private struct NewChatView: View {
     @State var lastOffset: CGFloat = 0
     let chat: Chat = Chat(userId: UUID())
     let chatVM: ChatViewModel = ChatViewModel()
-
+    
     ChatView(showKeyboard: $showKeyboard,
              offset: $offset,
              lastOffset: $lastOffset,
