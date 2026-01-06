@@ -61,7 +61,7 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-                .gesture(handleRtlDrag(size: size,
+                .simultaneousGesture(handleRtlDrag(size: size,
                                        slideThreshold: slideThreshold,
                                        bottomViewWidth: bottomViewWidth))
                 
@@ -84,7 +84,7 @@ struct ContentView: View {
                         }
                     }
                     .offset(x: offset)
-                    .gesture(handleLtrDrag(size: size,
+                    .simultaneousGesture(handleLtrDrag(size: size,
                                            slideThreshold: slideThreshold,
                                            bottomViewWidth: bottomViewWidth,
                                            isTopOffset: isTopOffset))
@@ -173,7 +173,7 @@ struct ContentView: View {
                     withAnimation {
                         offset = lastOffset
                     }
-                }
+                }                
             }
     }
     
