@@ -11,6 +11,8 @@ struct ChatView: View {
     @State private var userContent: String = ""
     @FocusState.Binding var showKeyboard: Bool
     @State private var isNewChat: Bool
+    @Binding var offset: CGFloat
+    @Binding var lastOffset: CGFloat
     
     private let chat: Chat
     
@@ -18,10 +20,14 @@ struct ChatView: View {
     @ObservedObject private var chatVM: ChatViewModel
     
     init(showKeyboard: FocusState<Bool>.Binding,
+         offset: Binding<CGFloat>,
+         lastOffset: Binding<CGFloat>,
          chat: Chat,
          isNewChat: Bool,
          chatVM: ChatViewModel) {
         self._showKeyboard = showKeyboard
+        self._offset = offset
+        self._lastOffset = lastOffset
         self.chat = chat
         self._isNewChat = State(initialValue: isNewChat)
         self._messageVM = StateObject(wrappedValue: MessageViewModel(chat: chat, isNewChat: isNewChat))
@@ -39,9 +45,9 @@ struct ChatView: View {
             }
         }
         .overlay(alignment: .top) {
-            Text("hi")
+            TopSection(offset: $offset, lastOffset: $lastOffset)
                 .padding(.top, 8)
-                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
         }
         .overlay(alignment: .bottom) {
             InputSection(userContent: $userContent,
@@ -62,7 +68,30 @@ struct ChatView: View {
             }
         }
     }
+}
+
+private struct TopSection: View {
+    @Binding var offset: CGFloat
+    @Binding var lastOffset: CGFloat
     
+    var body: some View {
+        HStack {
+            Button {
+                offset = 0
+                lastOffset = 0
+            } label: {
+                Text("sidebar")
+            }
+            
+            Spacer()
+            
+            Button {
+                
+            } label: {
+                Text("another button")
+            }
+        }
+    }
 }
 
 private struct InputSection: View {
@@ -157,10 +186,14 @@ private struct NewChatView: View {
 
 #Preview {
     @FocusState var showKeyboard
+    @State var offset: CGFloat = 0
+    @State var lastOffset: CGFloat = 0
     let chat: Chat = Chat(userId: UUID())
     let chatVM: ChatViewModel = ChatViewModel()
-    
+
     ChatView(showKeyboard: $showKeyboard,
+             offset: $offset,
+             lastOffset: $lastOffset,
              chat: chat,
              isNewChat: true,
              chatVM: chatVM)

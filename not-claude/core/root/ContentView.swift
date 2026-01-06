@@ -24,6 +24,8 @@ struct ContentView: View {
         switch topView {
         case .chat(let chat, let isNewChat):
             ChatView(showKeyboard: $showKeyboard,
+                     offset: $offset,
+                     lastOffset: $lastOffset,
                      chat: chat,
                      isNewChat: isNewChat,
                      chatVM: chatVM)
@@ -53,6 +55,7 @@ struct ContentView: View {
                 AppColors.backgroundSecondary
                 
                 /// bottom screen--is always SidebarView
+                /// consider adding a zoom feature. zoom = 100% when offset = 0
                 SidebarView(topView: $topView,
                             offset: $offset,
                             lastOffset: $lastOffset,
@@ -72,7 +75,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 45)
                             .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
                     )
-                    .overlay { /// todo: dim relative to offset
+                    .overlay { /// todo: make it relative to offset and bottomViewWidth
                         if isTopOffset {
                             Color.clear
                                 .contentShape(Rectangle())
