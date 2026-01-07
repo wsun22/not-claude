@@ -74,22 +74,18 @@ struct ContentView: View {
                     .padding(.bottom, geo.safeAreaInsets.bottom)
                     .allowsHitTesting(!isDragging)
                     .cornerRadius(45)
+                    .overlay(RoundedRectangle(cornerRadius: 45).stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15))
                     .overlay {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 45)
-                                .stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15)
-                            
-                            if isTopOffset {
-                                Color.clear
-                                    .contentShape(RoundedRectangle(cornerRadius: 45))
-                                    .gesture(handleTap(isTopOffset: isTopOffset))
-                            }
+                        if offset != 0 {
+                            Color.clear
+                                .contentShape(RoundedRectangle(cornerRadius: 45))
+                                .gesture(handleTap(isTopOffset: isTopOffset))
                         }
                     }
                     .offset(x: offset)
                     .simultaneousGesture(handleLtrDrag(slideThreshold: slideThreshold,
                                                        bottomViewWidth: bottomViewWidth,
-                                           isTopOffset: isTopOffset))
+                                                       isTopOffset: isTopOffset))
             }
             .simultaneousGesture(handleRtlDrag(slideThreshold: bottomViewWidth - slideThreshold, bottomViewWidth: bottomViewWidth))
             .sheet(isPresented: $showSettingsView) {
