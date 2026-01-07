@@ -84,11 +84,16 @@ private struct TopSection: View {
         HStack {
             Button {
                 print("sidebar button tapped")
+                print("offset: \(offset)")
+                print("lastOffset: \(lastOffset)")
+                print("bottomViewWidth: \(bottomViewWidth)")
                 withAnimation {
-                    if offset == 0 {
+                    if lastOffset == 0 {
+                        print("entered lastOffset == 0 clause")
                         offset = bottomViewWidth
                         lastOffset = bottomViewWidth
-                    } else if offset == bottomViewWidth {
+                    } else if lastOffset == bottomViewWidth {
+                        print("entered lastOffset == bototmViewWidth clause")
                         offset = 0
                         lastOffset = 0
                     }
