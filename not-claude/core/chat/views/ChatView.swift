@@ -98,6 +98,7 @@ private struct TopSection: View {
                         lastOffset = 0
                     }
                 }
+                haptic(.medium)
             } label: {
                 Text("sidebar")
             }

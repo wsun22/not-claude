@@ -78,8 +78,7 @@ struct ContentView: View {
                             Color.clear
                                 .contentShape(RoundedRectangle(cornerRadius: 45))
                                 .gesture(handleTap(isTopOffset: isTopOffset))
-                                .allowsHitTesting(!isDragging)
-                        }
+                        } 
                     }
                     .offset(x: offset)
                     .simultaneousGesture(handleLtrDrag(slideThreshold: slideThreshold,
