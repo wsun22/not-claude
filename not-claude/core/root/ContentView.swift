@@ -88,6 +88,7 @@ struct ContentView: View {
                                                        bottomViewWidth: bottomViewWidth,
                                                        isTopOffset: isTopOffset))
             }
+            .allowsHitTesting(!isDragging)
             .simultaneousGesture(handleRtlDrag(slideThreshold: bottomViewWidth - slideThreshold, bottomViewWidth: bottomViewWidth))
             .sheet(isPresented: $showSettingsView) {
                 SettingsView(showSettingsView: $showSettingsView)
