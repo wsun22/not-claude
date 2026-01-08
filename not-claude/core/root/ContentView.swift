@@ -126,10 +126,11 @@ struct ContentView: View {
                 
             }
             .onEnded { value in
+                guard lastOffset == 0 && value.translation.width > 0 && offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
+                defer { isDragging = false }
+
                 print("🟦 LTR drag ended, isDragging: \(isDragging)")
 
-                defer { isDragging = false }
-                guard lastOffset == 0 && value.translation.width > 0 && offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
 
                 if value.translation.width > slideThreshold {
                     withAnimation {
@@ -171,9 +172,10 @@ struct ContentView: View {
                 }
             }
             .onEnded { value in
-                print("🟥 RTL drag ended, isDragging: \(isDragging)")
-                defer { isDragging = false }
                 guard lastOffset == bottomViewWidth && value.translation.width < 0 && offset != lastOffset else { return }
+                defer { isDragging = false }
+
+                print("🟥 RTL drag ended, isDragging: \(isDragging)")
                 
                 if abs(value.translation.width) > slideThreshold {
                     withAnimation {
