@@ -44,6 +44,7 @@ struct ContentView: View {
     @State private var offset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
     @State private var isDragging: Bool = false
+    @State private var dragStart: Date = Date()
     @FocusState private var showKeyboard: Bool
     
     var body: some View {
@@ -91,7 +92,6 @@ struct ContentView: View {
                 SettingsView(showSettingsView: $showSettingsView)
             }
             .ignoresSafeArea()
-            .onChange(of: isDragging) { print(isDragging) }
         }
     }
     
@@ -104,6 +104,7 @@ struct ContentView: View {
             .onChanged { value in
                 guard lastOffset == 0 && value.translation.width > 0 && offset != bottomViewWidth else { return }
                 if !isDragging {
+                    dragStart = Date()
                     print("🟦 LTR drag started")
                   }
                 isDragging = true
@@ -126,11 +127,15 @@ struct ContentView: View {
             .onEnded { value in
                 guard lastOffset == 0 && value.translation.width > 0 && offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
                 defer { isDragging = false }
-
+                
+                let dragDuration = Date().timeIntervalSince(dragStart)
+                let dragVelocity = value.translation.width / dragDuration
+                let fastDragThreshold: CGFloat = 500
+                let isFastDrag: Bool = dragVelocity > fastDragThreshold
+                
                 print("🟦 LTR drag ended, isDragging: \(isDragging)")
 
-
-                if value.translation.width > slideThreshold {
+                if isFastDrag {
                     withAnimation {
                         offset = bottomViewWidth
                         lastOffset = bottomViewWidth
@@ -138,8 +143,17 @@ struct ContentView: View {
                     }
                     haptic(.medium)
                 } else {
-                    withAnimation {
-                        offset = lastOffset
+                    if value.translation.width > slideThreshold {
+                        withAnimation {
+                            offset = bottomViewWidth
+                            lastOffset = bottomViewWidth
+                            showKeyboard = false
+                        }
+                        haptic(.medium)
+                    } else {
+                        withAnimation {
+                            offset = lastOffset
+                        }
                     }
                 }
             }
@@ -153,10 +167,10 @@ struct ContentView: View {
             .onChanged { value in
                 guard lastOffset == bottomViewWidth && value.translation.width < 0 else { return }
                 if !isDragging {
-                      print("🟥 RTL drag started")
+                    dragStart = Date()
+                    print("🟥 RTL drag started")
                   }
                 isDragging = true
-                
                 let dragThreshold: CGFloat = bottomViewWidth * 0.9
                 
                 if offset > dragThreshold {
@@ -172,20 +186,34 @@ struct ContentView: View {
             .onEnded { value in
                 guard lastOffset == bottomViewWidth && value.translation.width < 0 && offset != lastOffset else { return }
                 defer { isDragging = false }
+                
+                
+                let dragDuration = Date().timeIntervalSince(dragStart)
+                let dragVelocity = abs(value.translation.width) / dragDuration
+                let fastDragThreshold: CGFloat = 500
+                let isFastDrag: Bool = dragVelocity > fastDragThreshold
 
                 print("🟥 RTL drag ended, isDragging: \(isDragging)")
                 
-                if abs(value.translation.width) > slideThreshold {
+                if isFastDrag {
                     withAnimation {
                         offset = 0
                         lastOffset = 0
                     }
                     haptic(.medium)
                 } else {
-                    withAnimation {
-                        offset = lastOffset
+                    if abs(value.translation.width) > slideThreshold {
+                        withAnimation {
+                            offset = 0
+                            lastOffset = 0
+                        }
+                        haptic(.medium)
+                    } else {
+                        withAnimation {
+                            offset = lastOffset
+                        }
                     }
-                }                
+                }
             }
     }
     
