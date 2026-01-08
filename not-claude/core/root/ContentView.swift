@@ -105,13 +105,16 @@ struct ContentView: View {
         DragGesture()
             .onChanged { value in
                 guard lastOffset == 0 && value.translation.width > 0 && offset != bottomViewWidth else { return }
+                if !isDragging {
+                    print("🟦 LTR drag started")
+                  }
                 isDragging = true
                 
                 let dragThreshold: CGFloat = bottomViewWidth * 0.1
                 
                 if offset < dragThreshold {
                     // require 2x more horizontal than vertical movement
-                    if abs(value.translation.width) > abs(value.translation.height) * 2 {
+                    if abs(value.translation.width) > abs(value.translation.height) * 2.5 {
                         let newOffset = lastOffset + value.translation.width
                         offset = min(max(newOffset, 0), bottomViewWidth)
                     }
@@ -123,6 +126,8 @@ struct ContentView: View {
                 
             }
             .onEnded { value in
+                print("🟦 LTR drag ended, isDragging: \(isDragging)")
+
                 defer { isDragging = false }
                 guard lastOffset == 0 && value.translation.width > 0 && offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
 
@@ -148,12 +153,15 @@ struct ContentView: View {
         DragGesture()
             .onChanged { value in
                 guard lastOffset == bottomViewWidth && value.translation.width < 0 else { return }
+                if !isDragging {
+                      print("🟥 RTL drag started")
+                  }
                 isDragging = true
                 
                 let dragThreshold: CGFloat = bottomViewWidth * 0.9
                 
                 if offset > dragThreshold {
-                    if abs(value.translation.width) > abs(value.translation.height) * 2 {
+                    if abs(value.translation.width) > abs(value.translation.height) * 2.5 {
                         let newOffset = lastOffset + value.translation.width
                         offset = min(max(newOffset, 0), bottomViewWidth)
                     }
@@ -163,6 +171,7 @@ struct ContentView: View {
                 }
             }
             .onEnded { value in
+                print("🟥 RTL drag ended, isDragging: \(isDragging)")
                 defer { isDragging = false }
                 guard lastOffset == bottomViewWidth && value.translation.width < 0 && offset != lastOffset else { return }
                 
