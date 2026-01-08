@@ -67,12 +67,10 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-                .allowsHitTesting(!isDragging)
                 
                 topScreen(bottomViewWidth: bottomViewWidth)
                     .padding(.top, geo.safeAreaInsets.top)
                     .padding(.bottom, geo.safeAreaInsets.bottom)
-                    .allowsHitTesting(!isDragging)
                     .cornerRadius(45)
                     .overlay(RoundedRectangle(cornerRadius: 45).stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15))
                     .overlay {
