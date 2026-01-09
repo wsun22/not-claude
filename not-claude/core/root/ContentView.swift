@@ -49,15 +49,14 @@ struct ContentView: View {
     
     var body: some View {
         GeometryReader { geo in
-            let size: CGSize = geo.size
-            let slideThreshold: CGFloat = size.width * 0.32
-            let bottomViewWidth: CGFloat = size.width * 0.85
+            let slideThreshold: CGFloat = geo.size.width * 0.32
+            let bottomViewWidth: CGFloat = geo.size.width * 0.85
             
             ZStack(alignment: .leading) {
                 AppColors.backgroundSecondary
                 
                 /// bottom screen--is always SidebarView
-                /// consider adding a zoom feature. zoom = 100% when offset = 0
+                /// consider adding a zoom feature. zoom = 100% when offset == bottomViewWidth
                 SidebarView(topView: $topView,
                             offset: $offset,
                             lastOffset: $lastOffset,
@@ -72,7 +71,7 @@ struct ContentView: View {
                     .padding(.top, geo.safeAreaInsets.top)
                     .padding(.bottom, geo.safeAreaInsets.bottom)
                     .cornerRadius(45)
-                    .overlay(RoundedRectangle(cornerRadius: 45).stroke(AppColors.outline, lineWidth: offset == 0 ? 0 : 0.15))
+                    .overlay(RoundedRectangle(cornerRadius: 45).stroke(AppColors.outline, lineWidth: offset > 0 ? 0.15 : 0))
                     .overlay {
                         if offset != 0 {
                             Color.clear
@@ -185,8 +184,6 @@ struct ContentView: View {
                     }
                 }
             }
-        
-        
     }
     
     /// handles the tap gesture for top screen when it is offset

@@ -219,3 +219,4 @@ private struct NewChatView: View {
              isNewChat: true,
              chatVM: chatVM)
 }
+
