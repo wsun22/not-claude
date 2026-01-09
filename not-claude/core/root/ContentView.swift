@@ -82,12 +82,9 @@ struct ContentView: View {
                         } 
                     }
                     .offset(x: offset)
-                    .simultaneousGesture(handleLtrDrag(slideThreshold: slideThreshold,
-                                                       bottomViewWidth: bottomViewWidth,
-                                                       isTopOffset: isTopOffset))
             }
             .allowsHitTesting(!isDragging)
-            .simultaneousGesture(handleRtlDrag(slideThreshold: bottomViewWidth - slideThreshold, bottomViewWidth: bottomViewWidth))
+            .simultaneousGesture(handleDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
             .sheet(isPresented: $showSettingsView) {
                 SettingsView(showSettingsView: $showSettingsView)
             }
@@ -95,126 +92,100 @@ struct ContentView: View {
         }
     }
     
-    /// handles left to right drags for the top screen. needs min maxing to bind, bc sometimes top screen moves too far right, can see white background to right of sidebarview
-    /// todo: only relatively horizontal drag
-    private func handleLtrDrag(slideThreshold: CGFloat,
-                               bottomViewWidth: CGFloat,
-                               isTopOffset: Bool) -> some Gesture {
+    /// handles ltr and rtl drags to offset topscreen
+    private func handleDrag(slideThreshold: CGFloat, bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
             .onChanged { value in
-                guard lastOffset == 0 && value.translation.width > 0 && offset != bottomViewWidth else { return }
                 if !isDragging {
                     dragStart = Date()
-                    print("🟦 LTR drag started")
-                  }
+                }
                 isDragging = true
                 
-                let dragThreshold: CGFloat = bottomViewWidth * 0.1
+                let dragDistance = value.translation.width
+                let dragHeight = value.translation.height
+                let newOffset = lastOffset + dragDistance
                 
-                if offset < dragThreshold {
-                    // require 2x more horizontal than vertical movement
-                    if abs(value.translation.width) > abs(value.translation.height) * 2.5 {
-                        let newOffset = lastOffset + value.translation.width
+                let relativelyHorizontal = abs(dragDistance) > abs(dragHeight) * 2.5
+                
+                if lastOffset == 0 { // top screen is not offset
+                    let dragThreshold = bottomViewWidth * 0.1
+                    if dragDistance > 0 { // ltr drag
+                        if offset < dragThreshold { // opening must be relatively horizontal
+                            if relativelyHorizontal {
+                                offset = min(max(newOffset, 0), bottomViewWidth)
+                            }
+                        } else {
+                            offset = min(max(newOffset, 0), bottomViewWidth)
+                        }
+                    } else if offset != 0 { // rtl drag
                         offset = min(max(newOffset, 0), bottomViewWidth)
                     }
-                } else {
-                    // once past threshold, allow any direction
-                    let newOffset = lastOffset + value.translation.width
-                    offset = min(max(newOffset, 0), bottomViewWidth)
+                } else if lastOffset == bottomViewWidth { // top screen is offset
+                    let dragThreshold = bottomViewWidth * 0.9
+                    if dragDistance < 0 { // rtl drag
+                        if offset > dragThreshold { // opening must be relatively horizontal
+                            if relativelyHorizontal {
+                                offset = min(max(newOffset, 0), bottomViewWidth)
+                            }
+                        } else {
+                            offset = min(max(newOffset, 0), bottomViewWidth)
+                        }
+                    } else if offset != bottomViewWidth {
+                        offset = min(max(newOffset, 0), bottomViewWidth)
+                    }
                 }
-                
             }
             .onEnded { value in
-                guard lastOffset == 0 && value.translation.width > 0 && offset != lastOffset else { return } // nothing to evaluate if lastOffset never changes
                 defer { isDragging = false }
+                let dragDistance = value.translation.width
+                let dragHeight = value.translation.height
                 
                 let dragDuration = Date().timeIntervalSince(dragStart)
-                let dragVelocity = value.translation.width / dragDuration
+                let dragVelocity = abs(dragDistance) / dragDuration
                 let fastDragThreshold: CGFloat = 500
                 let isFastDrag: Bool = dragVelocity > fastDragThreshold
+                let relativelyHorizontal = abs(dragDistance) > abs(dragHeight) * 2.5
                 
-                print("🟦 LTR drag ended, isDragging: \(isDragging)")
-
-                if isFastDrag {
-                    withAnimation {
-                        offset = bottomViewWidth
-                        lastOffset = bottomViewWidth
-                        showKeyboard = false
-                    }
-                    haptic(.medium)
-                } else {
-                    if value.translation.width > slideThreshold {
-                        withAnimation {
+                withAnimation {
+                    if lastOffset == 0 { // ltr drag
+                        if isFastDrag && relativelyHorizontal && dragDistance > 0 {
                             offset = bottomViewWidth
                             lastOffset = bottomViewWidth
+                            haptic(.medium)
                             showKeyboard = false
+                        } else if dragDistance > 0 {
+                            if dragDistance > slideThreshold {
+                                offset = bottomViewWidth
+                                lastOffset = bottomViewWidth
+                                haptic(.medium)
+                                showKeyboard = false
+                            }
+                            else {
+                                offset = 0
+                                lastOffset = 0
+                            }
                         }
-                        haptic(.medium)
-                    } else {
-                        withAnimation {
-                            offset = lastOffset
-                        }
-                    }
-                }
-            }
-    }
-    
-    /// handles right to left drags for bottom screen. needs min max, bc sometimes screen moves too far left, can see white background on right
-    /// todo: only relatively horizontal dragss. also, weird behavior when dragging AND tapping top screen
-    private func handleRtlDrag(slideThreshold: CGFloat,
-                               bottomViewWidth: CGFloat) -> some Gesture {
-        DragGesture()
-            .onChanged { value in
-                guard lastOffset == bottomViewWidth && value.translation.width < 0 else { return }
-                if !isDragging {
-                    dragStart = Date()
-                    print("🟥 RTL drag started")
-                  }
-                isDragging = true
-                let dragThreshold: CGFloat = bottomViewWidth * 0.9
-                
-                if offset > dragThreshold {
-                    if abs(value.translation.width) > abs(value.translation.height) * 2.5 {
-                        let newOffset = lastOffset + value.translation.width
-                        offset = min(max(newOffset, 0), bottomViewWidth)
-                    }
-                } else {
-                    let newOffset = lastOffset + value.translation.width
-                    offset = min(max(newOffset, 0), bottomViewWidth)
-                }
-            }
-            .onEnded { value in
-                guard lastOffset == bottomViewWidth && value.translation.width < 0 && offset != lastOffset else { return }
-                defer { isDragging = false }
-                
-                
-                let dragDuration = Date().timeIntervalSince(dragStart)
-                let dragVelocity = abs(value.translation.width) / dragDuration
-                let fastDragThreshold: CGFloat = 500
-                let isFastDrag: Bool = dragVelocity > fastDragThreshold
-
-                print("🟥 RTL drag ended, isDragging: \(isDragging)")
-                
-                if isFastDrag {
-                    withAnimation {
-                        offset = 0
-                        lastOffset = 0
-                    }
-                    haptic(.medium)
-                } else {
-                    if abs(value.translation.width) > slideThreshold {
-                        withAnimation {
+                    } else if lastOffset == bottomViewWidth { // rtl drag
+                        let rtlSlideThreshold = bottomViewWidth - slideThreshold
+                        if isFastDrag && relativelyHorizontal && dragDistance < 0 {
                             offset = 0
                             lastOffset = 0
-                        }
-                        haptic(.medium)
-                    } else {
-                        withAnimation {
-                            offset = lastOffset
+                            haptic(.medium)
+                        } else if dragDistance < 0 {
+                            if dragDistance < 0 && abs(dragDistance) > rtlSlideThreshold {
+                                offset = 0
+                                lastOffset = 0
+                                haptic(.medium)
+                            } else {
+                                offset = bottomViewWidth
+                                lastOffset = bottomViewWidth
+                            }
                         }
                     }
                 }
             }
+        
+        
     }
     
     /// handles the tap gesture for top screen when it is offset
