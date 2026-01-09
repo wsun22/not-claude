@@ -15,7 +15,7 @@ struct ContentView: View {
     @State private var showSettingsView: Bool = false
     @State private var offset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
-    @State private var isDragging: Bool = false
+    @GestureState private var isDragging: Bool = false
     @State private var dragStart: Date = Date()
     
     @FocusState private var showKeyboard: Bool
@@ -53,9 +53,14 @@ struct ContentView: View {
                         }
                     }
                     .offset(x: offset)
+                
+                Text("\(isDragging)")
             }
-            .allowsHitTesting(!isDragging) /// this messes with showKeyboard. basically, keyboard needs to come after/outside
+      //      .allowsHitTesting(!isDragging) /// this messes with showKeyboard. basically, keyboard needs to come after/outside
             .simultaneousGesture(handleDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
+            .onChange(of: isDragging) { oldValue, newValue in
+                 print("⚠️ isDragging changed: \(oldValue) -> \(newValue)")
+             }
             .sheet(isPresented: $showSettingsView) {
                 SettingsView(showSettingsView: $showSettingsView)
             }
@@ -89,12 +94,15 @@ struct ContentView: View {
     /// handles ltr and rtl drags to offset topscreen
     private func handleDrag(slideThreshold: CGFloat, bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
-            .onChanged { value in
-                if !isDragging {
+            .updating($isDragging) { value, state, transaction in
+                if !state {
+                    print("🟢 DRAG STARTED")
                     dragStart = Date()
+
                 }
-                isDragging = true
-                
+                state = true
+            }
+            .onChanged { value in
                 let dragDistance = value.translation.width
                 let dragHeight = value.translation.height
                 let newOffset = lastOffset + dragDistance
@@ -130,7 +138,7 @@ struct ContentView: View {
                 }
             }
             .onEnded { value in
-                defer { isDragging = false }
+                print("🔴 DRAG ENDED - onEnded fired")
                 guard offset != lastOffset else { return } /// must have moved
                 
                 let dragDistance = value.translation.width
