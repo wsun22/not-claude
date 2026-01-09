@@ -52,7 +52,6 @@ struct ContentView: View {
             let size: CGSize = geo.size
             let slideThreshold: CGFloat = size.width * 0.32
             let bottomViewWidth: CGFloat = size.width * 0.85
-            let isTopOffset: Bool = lastOffset == bottomViewWidth
             
             ZStack(alignment: .leading) {
                 AppColors.backgroundSecondary
@@ -78,8 +77,8 @@ struct ContentView: View {
                         if offset != 0 {
                             Color.clear
                                 .contentShape(RoundedRectangle(cornerRadius: 45))
-                                .gesture(handleTap(isTopOffset: isTopOffset))
-                        } 
+                                .gesture(handleTap())
+                        }
                     }
                     .offset(x: offset)
             }
@@ -108,8 +107,8 @@ struct ContentView: View {
                 let relativelyHorizontal = abs(dragDistance) > abs(dragHeight) * 2.5
                 
                 if lastOffset == 0 { // top screen is not offset
-                    let dragThreshold = bottomViewWidth * 0.1
                     if dragDistance > 0 { // ltr drag
+                        let dragThreshold = bottomViewWidth * 0.02
                         if offset < dragThreshold { // opening must be relatively horizontal
                             if relativelyHorizontal {
                                 offset = min(max(newOffset, 0), bottomViewWidth)
@@ -117,12 +116,12 @@ struct ContentView: View {
                         } else {
                             offset = min(max(newOffset, 0), bottomViewWidth)
                         }
-                    } else if offset != 0 { // rtl drag
+                    } else if offset != 0 { // this part is sketchy. need to handle when offset == 0, rtl drag
                         offset = min(max(newOffset, 0), bottomViewWidth)
                     }
                 } else if lastOffset == bottomViewWidth { // top screen is offset
-                    let dragThreshold = bottomViewWidth * 0.9
                     if dragDistance < 0 { // rtl drag
+                        let dragThreshold = bottomViewWidth * 0.98
                         if offset > dragThreshold { // opening must be relatively horizontal
                             if relativelyHorizontal {
                                 offset = min(max(newOffset, 0), bottomViewWidth)
@@ -191,10 +190,10 @@ struct ContentView: View {
     }
     
     /// handles the tap gesture for top screen when it is offset
-    private func handleTap(isTopOffset: Bool) -> some Gesture {
+    private func handleTap() -> some Gesture {
         TapGesture()
             .onEnded {
-                guard isTopOffset && !isDragging else { return }
+                guard !isDragging else { return }
 
                 withAnimation {
                     offset = 0
