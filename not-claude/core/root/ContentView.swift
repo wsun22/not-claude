@@ -137,6 +137,8 @@ struct ContentView: View {
             }
             .onEnded { value in
                 defer { isDragging = false }
+                guard offset != lastOffset else { return } // must have moved
+                
                 let dragDistance = value.translation.width
                 let dragHeight = value.translation.height
                 
