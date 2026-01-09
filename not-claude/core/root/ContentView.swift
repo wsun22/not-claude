@@ -40,7 +40,7 @@ struct ContentView: View {
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
                 
-                topScreen(bottomViewWidth: bottomViewWidth)
+                handleTopScreen(bottomViewWidth: bottomViewWidth)
                     .padding(.top, geo.safeAreaInsets.top)
                     .padding(.bottom, geo.safeAreaInsets.bottom)
                     .cornerRadius(45)
@@ -65,7 +65,7 @@ struct ContentView: View {
     
     /// handles what the top screen should be
     @ViewBuilder
-    private func topScreen(bottomViewWidth: CGFloat) -> some View {
+    private func handleTopScreen(bottomViewWidth: CGFloat) -> some View {
         switch topView {
         case .chat(let chat, let isNewChat):
             ChatView(showKeyboard: $showKeyboard,
