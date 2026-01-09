@@ -15,36 +15,17 @@ enum TopViews {
 struct ContentView: View {
     @EnvironmentObject var supabase: SupabaseManager
     @StateObject private var chatVM: ChatViewModel = ChatViewModel()
+    
     @State private var topView: TopViews = .chat(Chat(userId: UUID()), true) /// need to use supabase.currentUser.id instead
     
     @State private var showSettingsView: Bool = false
     
-    @ViewBuilder
-    private func topScreen(bottomViewWidth: CGFloat) -> some View {
-        switch topView {
-        case .chat(let chat, let isNewChat):
-            ChatView(showKeyboard: $showKeyboard,
-                     offset: $offset,
-                     lastOffset: $lastOffset,
-                     bottomViewWidth: bottomViewWidth,
-                     chat: chat,
-                     isNewChat: isNewChat,
-                     chatVM: chatVM)
-            .id(chat.id) /// use chat.id as the view identity
-        case .test:
-            ZStack {
-                Color.red.ignoresSafeArea()
-                
-                Text("hello")
-                    .foregroundStyle(.white)
-            }
-        }
-    }
-    
     @State private var offset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
+    
     @State private var isDragging: Bool = false
     @State private var dragStart: Date = Date()
+    
     @FocusState private var showKeyboard: Bool
     
     var body: some View {
@@ -81,12 +62,35 @@ struct ContentView: View {
                     }
                     .offset(x: offset)
             }
-            .allowsHitTesting(!isDragging)
+            .allowsHitTesting(!isDragging) /// this messes with showKeyboard. basically, keyboard needs to come after/outside
             .simultaneousGesture(handleDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
             .sheet(isPresented: $showSettingsView) {
                 SettingsView(showSettingsView: $showSettingsView)
             }
             .ignoresSafeArea()
+        }
+    }
+    
+    /// handles what the top screen should be
+    @ViewBuilder
+    private func topScreen(bottomViewWidth: CGFloat) -> some View {
+        switch topView {
+        case .chat(let chat, let isNewChat):
+            ChatView(showKeyboard: $showKeyboard,
+                     offset: $offset,
+                     lastOffset: $lastOffset,
+                     bottomViewWidth: bottomViewWidth,
+                     chat: chat,
+                     isNewChat: isNewChat,
+                     chatVM: chatVM)
+            .id(chat.id) /// use chat.id as the view identity
+        case .test:
+            ZStack {
+                Color.red.ignoresSafeArea()
+                
+                Text("hello")
+                    .foregroundStyle(.white)
+            }
         }
     }
     
@@ -105,23 +109,23 @@ struct ContentView: View {
                 
                 let relativelyHorizontal = abs(dragDistance) > abs(dragHeight) * 2.5
                 
-                if lastOffset == 0 { // top screen is not offset
-                    if dragDistance > 0 { // ltr drag
+                if lastOffset == 0 { /// top screen is not offset
+                    if dragDistance > 0 { /// ltr drag
                         let dragThreshold = bottomViewWidth * 0.02
-                        if offset < dragThreshold { // opening must be relatively horizontal
+                        if offset < dragThreshold { /// opening must be relatively horizontal
                             if relativelyHorizontal {
                                 offset = min(max(newOffset, 0), bottomViewWidth)
                             }
                         } else {
                             offset = min(max(newOffset, 0), bottomViewWidth)
                         }
-                    } else if offset != 0 { // this part is sketchy. need to handle when offset == 0, rtl drag
+                    } else if offset != 0 { /// this part is sketchy. need to handle when offset == 0, rtl drag
                         offset = min(max(newOffset, 0), bottomViewWidth)
                     }
-                } else if lastOffset == bottomViewWidth { // top screen is offset
-                    if dragDistance < 0 { // rtl drag
+                } else if lastOffset == bottomViewWidth { /// top screen is offset
+                    if dragDistance < 0 { /// rtl drag
                         let dragThreshold = bottomViewWidth * 0.98
-                        if offset > dragThreshold { // opening must be relatively horizontal
+                        if offset > dragThreshold { /// opening must be relatively horizontal
                             if relativelyHorizontal {
                                 offset = min(max(newOffset, 0), bottomViewWidth)
                             }
@@ -135,7 +139,7 @@ struct ContentView: View {
             }
             .onEnded { value in
                 defer { isDragging = false }
-                guard offset != lastOffset else { return } // must have moved
+                guard offset != lastOffset else { return } /// must have moved
                 
                 let dragDistance = value.translation.width
                 let dragHeight = value.translation.height
@@ -147,7 +151,7 @@ struct ContentView: View {
                 let relativelyHorizontal = abs(dragDistance) > abs(dragHeight) * 2.5
                 
                 withAnimation {
-                    if lastOffset == 0 { // ltr drag
+                    if lastOffset == 0 { /// ltr drag
                         if isFastDrag && relativelyHorizontal && dragDistance > 0 {
                             offset = bottomViewWidth
                             lastOffset = bottomViewWidth
@@ -165,7 +169,7 @@ struct ContentView: View {
                                 lastOffset = 0
                             }
                         }
-                    } else if lastOffset == bottomViewWidth { // rtl drag
+                    } else if lastOffset == bottomViewWidth { /// rtl drag
                         let rtlSlideThreshold = bottomViewWidth - slideThreshold
                         if isFastDrag && relativelyHorizontal && dragDistance < 0 {
                             offset = 0
