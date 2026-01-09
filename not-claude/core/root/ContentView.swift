@@ -7,22 +7,14 @@
 
 import SwiftUI
 
-enum TopViews {
-    case chat(Chat, Bool)
-    case test
-}
-
 struct ContentView: View {
     @EnvironmentObject var supabase: SupabaseManager
     @StateObject private var chatVM: ChatViewModel = ChatViewModel()
     
     @State private var topView: TopViews = .chat(Chat(userId: UUID()), true) /// need to use supabase.currentUser.id instead
-    
     @State private var showSettingsView: Bool = false
-    
     @State private var offset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
-    
     @State private var isDragging: Bool = false
     @State private var dragStart: Date = Date()
     
