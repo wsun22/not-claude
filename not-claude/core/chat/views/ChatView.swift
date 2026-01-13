@@ -51,7 +51,13 @@ struct ChatView: View {
             }
         }
         .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
-            CustomButton { print("hi") }
+            HStack {
+                CustomButton { print("hi") }
+                
+                Spacer()
+                
+                CustomButton {}
+            }
             .padding(.top, 8)
             .padding(.horizontal, 16)
         }
