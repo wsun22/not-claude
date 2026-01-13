@@ -17,20 +17,21 @@ struct CustomButton: View {
     let action: () -> Void
     
     var body: some View {
-        Ellipse()
-            .fill(Color.orange)
-            .frame(width: width, height: height)
-            .offset(offset)
-            .gesture(handleDrag())
+        GeometryReader { geo in
+            Ellipse()
+                .fill(Color.orange)
+                .frame(width: width, height: height)
+                .offset(offset)
+                .gesture(handleDrag(geo))
+        }
     }
-    
-    private func handleDrag() -> some Gesture {
+
+    private func handleDrag(_ geo: GeometryProxy) -> some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
-                let horizontalDistance = value.translation.width
-                let verticalDistance = value.translation.height
+                let fingerLocation = value.location
+                print(fingerLocation)
                 
-                offset = CGSize(width: horizontalDistance / 50, height: verticalDistance / 50)
                 
             } .onEnded { value in
                 width = 50
