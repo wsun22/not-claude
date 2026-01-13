@@ -14,6 +14,7 @@ struct ChatView: View {
     @Binding var offset: CGFloat
     @Binding var lastOffset: CGFloat
     private let bottomViewWidth: CGFloat
+    private let isDragging: Bool
     
     private let chat: Chat
     
@@ -23,6 +24,7 @@ struct ChatView: View {
     init(showKeyboard: FocusState<Bool>.Binding,
          offset: Binding<CGFloat>,
          lastOffset: Binding<CGFloat>,
+         isDragging: Bool,
          bottomViewWidth: CGFloat,
          chat: Chat,
          isNewChat: Bool,
@@ -30,6 +32,7 @@ struct ChatView: View {
         self._showKeyboard = showKeyboard
         self._offset = offset
         self._lastOffset = lastOffset
+        self.isDragging = isDragging
         self.bottomViewWidth = bottomViewWidth
         self.chat = chat
         self._isNewChat = State(initialValue: isNewChat)
@@ -47,13 +50,14 @@ struct ChatView: View {
                 
             }
         }
-        .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
-            TopSection(offset: $offset,
-                       lastOffset: $lastOffset,
-                       bottomViewWidth: bottomViewWidth)
-            .padding(.top, 8)
-            .padding(.horizontal, 16)
-        }
+//        .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
+//            TopSection(offset: $offset,
+//                       lastOffset: $lastOffset,
+//                       isDragging: isDragging,
+//                       bottomViewWidth: bottomViewWidth)
+//            .padding(.top, 8)
+//            .padding(.horizontal, 16)
+//        }
         .overlay(alignment: .bottom) {
             InputSection(userContent: $userContent,
                          showKeyboard: $showKeyboard,
@@ -78,11 +82,14 @@ struct ChatView: View {
 private struct TopSection: View {
     @Binding var offset: CGFloat
     @Binding var lastOffset: CGFloat
+    let isDragging: Bool
     let bottomViewWidth: CGFloat
     
     var body: some View {
         HStack {
             Button {
+                print("what ChatView/TopSection sees: \(isDragging)")
+                guard !isDragging else { return }
                 print("sidebar button tapped")
                 print("offset: \(offset)")
                 print("lastOffset: \(lastOffset)")
@@ -204,19 +211,19 @@ private struct NewChatView: View {
     }
 }
 
-#Preview {
-    @FocusState var showKeyboard
-    @State var offset: CGFloat = 0
-    @State var lastOffset: CGFloat = 0
-    let chat: Chat = Chat(userId: UUID())
-    let chatVM: ChatViewModel = ChatViewModel()
-    
-    ChatView(showKeyboard: $showKeyboard,
-             offset: $offset,
-             lastOffset: $lastOffset,
-             bottomViewWidth: 0,
-             chat: chat,
-             isNewChat: true,
-             chatVM: chatVM)
-}
-
+//#Preview {
+//    @FocusState var showKeyboard
+//    @State var offset: CGFloat = 0
+//    @State var lastOffset: CGFloat = 0
+//    let chat: Chat = Chat(userId: UUID())
+//    let chatVM: ChatViewModel = ChatViewModel()
+//    
+//    ChatView(showKeyboard: $showKeyboard,
+//             offset: $offset,
+//             lastOffset: $lastOffset,
+//             bottomViewWidth: 0,
+//             chat: chat,
+//             isNewChat: true,
+//             chatVM: chatVM)
+//}
+//

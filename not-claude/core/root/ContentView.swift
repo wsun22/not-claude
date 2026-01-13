@@ -27,6 +27,7 @@ struct ContentView: View {
             
             ZStack(alignment: .leading) {
                 AppColors.backgroundSecondary
+                    .allowsHitTesting(false)
                 
                 /// bottom screen--is always SidebarView
                 /// consider adding a zoom feature. zoom = 100% when offset == bottomViewWidth
@@ -39,24 +40,31 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
+                .allowsHitTesting(!isDragging)
                 
-                handleTopScreen(bottomViewWidth: bottomViewWidth)
+                handleTopScreen(bottomViewWidth: bottomViewWidth, isDragging: isDragging)
                     .padding(.top, geo.safeAreaInsets.top)
                     .padding(.bottom, geo.safeAreaInsets.bottom)
                     .cornerRadius(45)
                     .overlay(RoundedRectangle(cornerRadius: 45).stroke(AppColors.outline, lineWidth: offset > 0 ? 0.15 : 0))
                     .overlay {
-                        if offset != 0 {
+                        if offset == bottomViewWidth {
                             Color.clear
                                 .contentShape(RoundedRectangle(cornerRadius: 45))
                                 .gesture(handleTap())
                         }
                     }
+                    .allowsHitTesting(!isDragging)
+                    .overlay(alignment: .top) {
+                        Text("hi")
+                        .padding(.top, geo.safeAreaInsets.top)
+                        .simultaneousGesture(hiGesture())
+                    }
                     .offset(x: offset)
                 
                 Text("\(isDragging)")
             }
-      //      .allowsHitTesting(!isDragging) /// this messes with showKeyboard. basically, keyboard needs to come after/outside
+         //   .allowsHitTesting(!isDragging) /// this
             .simultaneousGesture(handleDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
             .onChange(of: isDragging) { oldValue, newValue in
                  print("⚠️ isDragging changed: \(oldValue) -> \(newValue)")
@@ -68,14 +76,22 @@ struct ContentView: View {
         }
     }
     
+    private func hiGesture() -> some Gesture {
+        return TapGesture()
+            .onEnded {
+                print("hi")
+            }
+    }
+    
     /// handles what the top screen should be
     @ViewBuilder
-    private func handleTopScreen(bottomViewWidth: CGFloat) -> some View {
+    private func handleTopScreen(bottomViewWidth: CGFloat, isDragging: Bool) -> some View {
         switch topView {
         case .chat(let chat, let isNewChat):
             ChatView(showKeyboard: $showKeyboard,
                      offset: $offset,
                      lastOffset: $lastOffset,
+                     isDragging: isDragging,
                      bottomViewWidth: bottomViewWidth,
                      chat: chat,
                      isNewChat: isNewChat,
@@ -94,7 +110,7 @@ struct ContentView: View {
     /// handles ltr and rtl drags to offset topscreen
     private func handleDrag(slideThreshold: CGFloat, bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
-            .updating($isDragging) { value, state, transaction in
+            .updating($isDragging) { _ , state, _ in
                 if !state {
                     print("🟢 DRAG STARTED")
                     dragStart = Date()
@@ -194,6 +210,7 @@ struct ContentView: View {
     private func handleTap() -> some Gesture {
         TapGesture()
             .onEnded {
+                print("what handleTap() sees: isDragging: \(isDragging)")
                 guard !isDragging else { return }
 
                 withAnimation {
