@@ -50,14 +50,11 @@ struct ChatView: View {
                 
             }
         }
-//        .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
-//            TopSection(offset: $offset,
-//                       lastOffset: $lastOffset,
-//                       isDragging: isDragging,
-//                       bottomViewWidth: bottomViewWidth)
-//            .padding(.top, 8)
-//            .padding(.horizontal, 16)
-//        }
+        .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
+            CustomButton { print("hi") }
+            .padding(.top, 8)
+            .padding(.horizontal, 16)
+        }
         .overlay(alignment: .bottom) {
             InputSection(userContent: $userContent,
                          showKeyboard: $showKeyboard,
@@ -211,19 +208,20 @@ private struct NewChatView: View {
     }
 }
 
-//#Preview {
-//    @FocusState var showKeyboard
-//    @State var offset: CGFloat = 0
-//    @State var lastOffset: CGFloat = 0
-//    let chat: Chat = Chat(userId: UUID())
-//    let chatVM: ChatViewModel = ChatViewModel()
-//    
-//    ChatView(showKeyboard: $showKeyboard,
-//             offset: $offset,
-//             lastOffset: $lastOffset,
-//             bottomViewWidth: 0,
-//             chat: chat,
-//             isNewChat: true,
-//             chatVM: chatVM)
-//}
-//
+#Preview {
+    @FocusState var showKeyboard
+    @State var offset: CGFloat = 0
+    @State var lastOffset: CGFloat = 0
+    let chat: Chat = Chat(userId: UUID())
+    let chatVM: ChatViewModel = ChatViewModel()
+    
+    ChatView(showKeyboard: $showKeyboard,
+             offset: $offset,
+             lastOffset: $lastOffset,
+             isDragging: false,
+             bottomViewWidth: 0,
+             chat: chat,
+             isNewChat: true,
+             chatVM: chatVM)
+}
+
