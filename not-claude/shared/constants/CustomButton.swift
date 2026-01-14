@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct CustomButton: View {
-    @State private var width: CGFloat = 50
+    @State private var width: CGFloat = 50 /// todo: dont hardcode
     @State private var height: CGFloat = 50
     @State private var offset: CGSize = .zero
     @State private var isDragging: Bool = false
@@ -49,9 +49,10 @@ struct CustomButton: View {
     }
     
     private var gradientCenter: UnitPoint {
-        UnitPoint(x: 0.5 + offset.width / 10, y: 0.5 + offset.height / 10)
+        UnitPoint(x: offset.width / 10, y: offset.height / 10)
     }
     
+    /// implicity handles tap + long taps via dragDistance
     private func handleDrag() -> some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .named("button"))
             .onChanged { value in
@@ -68,7 +69,7 @@ struct CustomButton: View {
             } .onEnded { value in
                 defer { isDragging = false }
                 
-                let dragDistance = sqrt(pow(offset.width, 2) + pow(offset.height, 2)) // handle taps
+                let dragDistance = sqrt(pow(offset.width, 2) + pow(offset.height, 2)) /// calculate distance moved for tap threshold
                 if dragDistance < 1 {
                     action()
                     haptic(.medium)
@@ -83,7 +84,7 @@ struct CustomButton: View {
 
 #Preview {
     CustomButton(
-        systemName: "slider.horizontal.3",
+        systemName: "line.3.horizontal",
         foregroundColor: AppColors.textPrimary,
         backgroundColor: AppColors.backgroundSecondary) {
         print("tapped")
