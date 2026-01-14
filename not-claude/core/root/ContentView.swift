@@ -40,7 +40,7 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-                .allowsHitTesting(!isDragging)
+     //           .allowsHitTesting(!isDragging)
                 
                 handleTopScreen(bottomViewWidth: bottomViewWidth, isDragging: isDragging)
                     .padding(.top, geo.safeAreaInsets.top)
@@ -54,12 +54,7 @@ struct ContentView: View {
                                 .gesture(handleTap())
                         }
                     }
-                    .allowsHitTesting(!isDragging)
-                    .overlay(alignment: .top) {
-                        Text("hi")
-                        .padding(.top, geo.safeAreaInsets.top)
-                        .simultaneousGesture(hiGesture())
-                    }
+      //              .allowsHitTesting(!isDragging)
                     .offset(x: offset)
                 
                 Text("\(isDragging)")
@@ -75,14 +70,7 @@ struct ContentView: View {
             .ignoresSafeArea()
         }
     }
-    
-    private func hiGesture() -> some Gesture {
-        return TapGesture()
-            .onEnded {
-                print("hi")
-            }
-    }
-    
+        
     /// handles what the top screen should be
     @ViewBuilder
     private func handleTopScreen(bottomViewWidth: CGFloat, isDragging: Bool) -> some View {
@@ -108,6 +96,7 @@ struct ContentView: View {
     }
     
     /// handles ltr and rtl drags to offset topscreen
+    /// todo: implement coordinate space
     private func handleDrag(slideThreshold: CGFloat, bottomViewWidth: CGFloat) -> some Gesture {
         DragGesture()
             .updating($isDragging) { _ , state, _ in

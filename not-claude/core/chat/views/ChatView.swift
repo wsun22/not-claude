@@ -52,7 +52,7 @@ struct ChatView: View {
         }
         .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
             HStack {
-                CustomButton(
+                LiquidGlassButton(
                     systemName: "line.3.horizontal",
                     foregroundColor: AppColors.textPrimary,
                     backgroundColor: AppColors.backgroundSecondary) {
@@ -60,9 +60,11 @@ struct ChatView: View {
                             if lastOffset == 0 {
                                 offset = bottomViewWidth
                                 lastOffset = bottomViewWidth
+                                haptic(.medium)
                             } else if lastOffset == bottomViewWidth {
                                 offset = 0
                                 lastOffset = 0
+                                haptic(.medium)
                             }
                         }
                 }
@@ -93,48 +95,6 @@ struct ChatView: View {
         .onAppear { /// open keyboard
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showKeyboard = true
-            }
-        }
-    }
-}
-
-private struct TopSection: View {
-    @Binding var offset: CGFloat
-    @Binding var lastOffset: CGFloat
-    let isDragging: Bool
-    let bottomViewWidth: CGFloat
-    
-    var body: some View {
-        HStack {
-            Button {
-                print("what ChatView/TopSection sees: \(isDragging)")
-                guard !isDragging else { return }
-                print("sidebar button tapped")
-                print("offset: \(offset)")
-                print("lastOffset: \(lastOffset)")
-                print("bottomViewWidth: \(bottomViewWidth)")
-                withAnimation {
-                    if lastOffset == 0 {
-                        print("entered lastOffset == 0 clause")
-                        offset = bottomViewWidth
-                        lastOffset = bottomViewWidth
-                    } else if lastOffset == bottomViewWidth {
-                        print("entered lastOffset == bototmViewWidth clause")
-                        offset = 0
-                        lastOffset = 0
-                    }
-                }
-                haptic(.medium)
-            } label: {
-                Text("sidebar")
-            }
-            
-            Spacer()
-            
-            Button {
-                
-            } label: {
-                Text("another button")
             }
         }
     }

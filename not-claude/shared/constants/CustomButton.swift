@@ -21,26 +21,23 @@ struct CustomButton: View {
     
     var body: some View {
         ZStack {
-            Ellipse()
-                .fill(backgroundColor)
-            
             Image(systemName: systemName)
                 .foregroundStyle(foregroundColor)
                 .font(.system(size: 20 * (isDragging ? 1.1 : 1.0)))
             
-            if isDragging {
-                Ellipse()
-                    .fill(
-                        RadialGradient(
-                            colors: [.white.opacity(0.3), backgroundColor.opacity(0.3)],
-                            center: gradientCenter,
-                            startRadius: 0,
-                            endRadius: 100
-                        )
+            Ellipse()
+                .fill(
+                    RadialGradient(
+                        colors: [.white.opacity(0.3), backgroundColor.opacity(0.3)],
+                        center: gradientCenter,
+                        startRadius: 0,
+                        endRadius: 100
                     )
-            }
+                )
+                .opacity(isDragging ? 1 : 0)
+            
         }
-        .overlay(Ellipse().stroke(AppColors.outline, lineWidth: 0.15))
+        .glassEffect(.regular.tint(backgroundColor), in: Ellipse())
         .frame(width: width * (isDragging ? 1.1 : 1.0), height: height * (isDragging ? 1.1 : 1.0))
         .offset(offset)
         .coordinateSpace(name: "button")
