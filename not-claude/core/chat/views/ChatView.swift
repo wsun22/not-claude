@@ -50,17 +50,17 @@ struct ChatView: View {
                 
             }
         }
-        .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
-            HStack {
-                CustomButton { print("hi") }
-                
-                Spacer()
-                
-                CustomButton {}
-            }
-            .padding(.top, 8)
-            .padding(.horizontal, 16)
-        }
+//        .overlay(alignment: .top) { /// this top section might actually belong to topScreen, not each individual top screen type
+//            HStack {
+//                CustomButton { print("hi") }
+//                
+//                Spacer()
+//                
+//                CustomButton {}
+//            }
+//            .padding(.top, 8)
+//            .padding(.horizontal, 16)
+//        }
         .overlay(alignment: .bottom) {
             InputSection(userContent: $userContent,
                          showKeyboard: $showKeyboard,

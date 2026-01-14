@@ -14,17 +14,27 @@ struct CustomButton: View {
     @State private var offset: CGSize = .zero
     @State private var isDragging: Bool = false
     
+    let systemName: String
+    let foregroundColor: Color
+    let backgroundColor: Color
     let action: () -> Void
     
     var body: some View {
-        Ellipse()
-            .fill(Color.orange)
-            .frame(width: width * (isDragging ? 1.1 : 1.0), height: height * (isDragging ? 1.1 : 1.0))
-            .offset(offset)
-            .coordinateSpace(name: "button")
-            .gesture(handleDrag())
-            .frame(width: 50 * 1.1, height: 50 * 1.1)
-            .ignoresSafeArea()
+        ZStack {
+            Ellipse()
+                .fill(backgroundColor)
+            
+            Image(systemName: systemName)
+                .foregroundStyle(foregroundColor)
+                .font(.system(size: 20 * (isDragging ? 1.1 : 1.0)))
+                .scaledToFit()
+        }
+        .frame(width: width * (isDragging ? 1.1 : 1.0), height: height * (isDragging ? 1.1 : 1.0))
+        .offset(offset)
+        .coordinateSpace(name: "button")
+        .gesture(handleDrag())
+        .frame(width: 50 * 1.1, height: 50 * 1.1)
+        .ignoresSafeArea()
     }
     
     private func handleDrag() -> some Gesture {
@@ -57,7 +67,10 @@ struct CustomButton: View {
 }
 
 #Preview {
-    CustomButton {
+    CustomButton(
+        systemName: "slider.horizontal.3",
+        foregroundColor: AppColors.textPrimary,
+        backgroundColor: AppColors.backgroundSecondary) {
         print("tapped")
     }
 }
