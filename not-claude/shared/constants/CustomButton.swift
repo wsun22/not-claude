@@ -40,11 +40,12 @@ struct CustomButton: View {
                     )
             }
         }
+        .overlay(Ellipse().stroke(AppColors.outline, lineWidth: 0.15))
         .frame(width: width * (isDragging ? 1.1 : 1.0), height: height * (isDragging ? 1.1 : 1.0))
         .offset(offset)
         .coordinateSpace(name: "button")
         .gesture(handleDrag())
-        .frame(width: 50 * 1.1, height: 50 * 1.1)
+        .frame(width: 50 * 1.1, height: 50 * 1.1) /// reserve space
         .ignoresSafeArea()
     }
     
@@ -66,13 +67,13 @@ struct CustomButton: View {
                 offset = CGSize(width: dx / 30, height: dy / 30)
                 width = 50 + abs(dx) / 50
                 height = 50 + abs(dy) / 50
-            } .onEnded { value in
+            }
+            .onEnded { value in
                 defer { isDragging = false }
                 
                 let dragDistance = sqrt(pow(offset.width, 2) + pow(offset.height, 2)) /// calculate distance moved for tap threshold
                 if dragDistance < 1 {
                     action()
-                    haptic(.medium)
                 }
                 
                 width = 50
