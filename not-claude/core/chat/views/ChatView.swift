@@ -68,10 +68,11 @@ struct ChatView: View {
                             }
                         }
                 }
+                
                 Spacer()
                 
-                CustomButton(
-                    systemName: "line.3.horizontal",
+                LiquidGlassButton(
+                    systemName: "eye.slash",
                     foregroundColor: AppColors.textPrimary,
                     backgroundColor: AppColors.backgroundSecondary) {
                     print("tapped")
