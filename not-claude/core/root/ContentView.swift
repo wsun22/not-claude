@@ -26,8 +26,8 @@ struct ContentView: View {
             let bottomViewWidth: CGFloat = geo.size.width * 0.85
             
             ZStack(alignment: .leading) {
-                AppColors.backgroundSecondary
-                    .allowsHitTesting(false)
+                AppColors.backgroundSecondary.allowsHitTesting(false)
+
                 
                 /// bottom screen--is always SidebarView
                 /// consider adding a zoom feature. zoom = 100% when offset == bottomViewWidth
@@ -40,6 +40,7 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
+                .allowsHitTesting(!isDragging)
                 
                 handleTopScreen(bottomViewWidth: bottomViewWidth, isDragging: isDragging)
                     .padding(.top, geo.safeAreaInsets.top)
@@ -54,21 +55,16 @@ struct ContentView: View {
                         }
                     }
                     .offset(x: offset)
-                
-                Text("\(isDragging)")
+                    .allowsHitTesting(!isDragging)
             }
-            .allowsHitTesting(!isDragging)
             .simultaneousGesture(handleDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
-            .onChange(of: isDragging) { oldValue, newValue in
-                 print("⚠️ isDragging changed: \(oldValue) -> \(newValue)")
-             }
             .sheet(isPresented: $showSettingsView) {
                 SettingsView(showSettingsView: $showSettingsView)
             }
             .ignoresSafeArea()
         }
     }
-        
+    
     /// handles what the top screen should be
     @ViewBuilder
     private func handleTopScreen(bottomViewWidth: CGFloat, isDragging: Bool) -> some View {
@@ -101,7 +97,7 @@ struct ContentView: View {
                 if !state {
                     print("🟢 DRAG STARTED")
                     dragStart = Date()
-
+                    
                 }
                 state = true
             }
@@ -197,7 +193,7 @@ struct ContentView: View {
     private func handleTap() -> some Gesture {
         TapGesture()
             .onEnded {
-   //             print("what handleTap() sees: isDragging: \(isDragging)")
+                //             print("what handleTap() sees: isDragging: \(isDragging)")
                 guard !isDragging else { return }
                 
                 withAnimation {
