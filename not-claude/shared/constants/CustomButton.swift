@@ -27,7 +27,18 @@ struct CustomButton: View {
             Image(systemName: systemName)
                 .foregroundStyle(foregroundColor)
                 .font(.system(size: 20 * (isDragging ? 1.1 : 1.0)))
-                .scaledToFit()
+            
+            if isDragging {
+                Ellipse()
+                    .fill(
+                        RadialGradient(
+                            colors: [.white.opacity(0.3), backgroundColor.opacity(0.3)],
+                            center: gradientCenter,
+                            startRadius: 0,
+                            endRadius: 100
+                        )
+                    )
+            }
         }
         .frame(width: width * (isDragging ? 1.1 : 1.0), height: height * (isDragging ? 1.1 : 1.0))
         .offset(offset)
@@ -35,6 +46,10 @@ struct CustomButton: View {
         .gesture(handleDrag())
         .frame(width: 50 * 1.1, height: 50 * 1.1)
         .ignoresSafeArea()
+    }
+    
+    private var gradientCenter: UnitPoint {
+        UnitPoint(x: 0.5 + offset.width / 10, y: 0.5 + offset.height / 10)
     }
     
     private func handleDrag() -> some Gesture {
