@@ -24,13 +24,15 @@ struct ContentView: View {
         GeometryReader { geo in
             let slideThreshold: CGFloat = geo.size.width * 0.32
             let bottomViewWidth: CGFloat = geo.size.width * 0.85
+            var sidebarViewScale: CGFloat {
+                let x = offset / bottomViewWidth // 0 to 1
+                return 0.985 + (x * 0.015) // scale from 98.5% to 100%
+            }
             
             ZStack(alignment: .leading) {
                 AppColors.backgroundSecondary.allowsHitTesting(false)
 
-                
                 /// bottom screen--is always SidebarView
-                /// consider adding a zoom feature. zoom = 100% when offset == bottomViewWidth
                 SidebarView(topView: $topView,
                             offset: $offset,
                             lastOffset: $lastOffset,
@@ -41,6 +43,7 @@ struct ContentView: View {
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
                 .allowsHitTesting(!isDragging)
+                .scaleEffect(sidebarViewScale) /// 1.0 when offset == bottomViewWidth (offset)
                 
                 handleTopScreen(bottomViewWidth: bottomViewWidth, isDragging: isDragging)
                     .padding(.top, geo.safeAreaInsets.top)
@@ -62,6 +65,9 @@ struct ContentView: View {
                 SettingsView(showSettingsView: $showSettingsView)
             }
             .ignoresSafeArea()
+            .onChange(of: sidebarViewScale) {
+                print(sidebarViewScale)
+            }
         }
     }
     
@@ -95,9 +101,7 @@ struct ContentView: View {
         DragGesture()
             .updating($isDragging) { _ , state, _ in
                 if !state {
-                    print("🟢 DRAG STARTED")
                     dragStart = Date()
-                    
                 }
                 state = true
             }
@@ -137,7 +141,6 @@ struct ContentView: View {
                 }
             }
             .onEnded { value in
-                print("🔴 DRAG ENDED - onEnded fired")
                 guard offset != lastOffset else { return } /// must have moved
                 
                 let dragDistance = value.translation.width
@@ -193,7 +196,6 @@ struct ContentView: View {
     private func handleTap() -> some Gesture {
         TapGesture()
             .onEnded {
-                //             print("what handleTap() sees: isDragging: \(isDragging)")
                 guard !isDragging else { return }
                 
                 withAnimation {
