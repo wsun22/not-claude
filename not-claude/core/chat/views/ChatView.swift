@@ -60,6 +60,7 @@ struct ChatView: View {
                             if lastOffset == 0 {
                                 offset = bottomViewWidth
                                 lastOffset = bottomViewWidth
+                                showKeyboard = false
                                 haptic(.medium)
                             } else if lastOffset == bottomViewWidth {
                                 offset = 0

@@ -40,7 +40,6 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-     //           .allowsHitTesting(!isDragging)
                 
                 handleTopScreen(bottomViewWidth: bottomViewWidth, isDragging: isDragging)
                     .padding(.top, geo.safeAreaInsets.top)
@@ -51,15 +50,14 @@ struct ContentView: View {
                         if offset == bottomViewWidth {
                             Color.clear
                                 .contentShape(RoundedRectangle(cornerRadius: 45))
-                                .gesture(handleTap())
+                                .simultaneousGesture(handleTap())
                         }
                     }
-      //              .allowsHitTesting(!isDragging)
                     .offset(x: offset)
                 
                 Text("\(isDragging)")
             }
-         //   .allowsHitTesting(!isDragging) /// this
+            .allowsHitTesting(!isDragging)
             .simultaneousGesture(handleDrag(slideThreshold: slideThreshold, bottomViewWidth: bottomViewWidth))
             .onChange(of: isDragging) { oldValue, newValue in
                  print("⚠️ isDragging changed: \(oldValue) -> \(newValue)")
@@ -199,9 +197,9 @@ struct ContentView: View {
     private func handleTap() -> some Gesture {
         TapGesture()
             .onEnded {
-                print("what handleTap() sees: isDragging: \(isDragging)")
+   //             print("what handleTap() sees: isDragging: \(isDragging)")
                 guard !isDragging else { return }
-
+                
                 withAnimation {
                     offset = 0
                     lastOffset = 0
