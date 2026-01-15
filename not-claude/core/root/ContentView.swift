@@ -24,7 +24,7 @@ struct ContentView: View {
         GeometryReader { geo in
             let slideThreshold: CGFloat = geo.size.width * 0.32
             let bottomViewWidth: CGFloat = geo.size.width * 0.85
-            var offsetPercent: CGFloat = offset / bottomViewWidth /// 0 to 1
+            let offsetPercent: CGFloat = offset / bottomViewWidth /// 0 to 1
             let minScale = 0.985 /// sidebar view scale
             let maxTint = 0.10
 
@@ -41,11 +41,8 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
-                .scaleEffect(minScale + offsetPercent * (1 - minScale))
-                .overlay(
-                    Color.black
-                        .opacity((1 - offsetPercent) * maxTint)
-                )
+                .scaleEffect(minScale + offsetPercent * (1 - minScale)) /// shrink
+                .overlay(Color.black.opacity((1 - offsetPercent) * maxTint)) /// tint
                 .allowsHitTesting(!isDragging)
                 
                 handleTopScreen(bottomViewWidth: bottomViewWidth, isDragging: isDragging)
@@ -53,11 +50,11 @@ struct ContentView: View {
                     .padding(.bottom, geo.safeAreaInsets.bottom)
                     .cornerRadius(45)
                     .overlay(RoundedRectangle(cornerRadius: 45).stroke(AppColors.outline, lineWidth: offset > 0 ? 0.15 : 0))
-                    .overlay {
+                    .overlay { /// tint
                         Color.black
                             .contentShape(RoundedRectangle(cornerRadius: 45))
                             .opacity(offsetPercent * maxTint * 0.5)
-                            .simultaneousGesture(handleTap())
+                            .gesture(handleTap())
                     }
                     .offset(x: offset)
                     .allowsHitTesting(!isDragging)
