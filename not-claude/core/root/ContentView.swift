@@ -24,11 +24,10 @@ struct ContentView: View {
         GeometryReader { geo in
             let slideThreshold: CGFloat = geo.size.width * 0.32
             let bottomViewWidth: CGFloat = geo.size.width * 0.85
-            var sidebarViewScale: CGFloat {
-                let x = offset / bottomViewWidth // 0 to 1
-                return 0.985 + (x * 0.015) // scale from 98.5% to 100%
-            }
-            
+            var offsetPercent: CGFloat = offset / bottomViewWidth /// 0 to 1
+            let minScale = 0.985 /// sidebar view scale
+            let maxTint = 0.15
+
             ZStack(alignment: .leading) {
                 AppColors.backgroundSecondary.allowsHitTesting(false)
 
@@ -42,8 +41,9 @@ struct ContentView: View {
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
+                .scaleEffect(minScale + offsetPercent * (1 - minScale))
+                .overlay(Color.black.opacity((1 - offsetPercent) * maxTint))
                 .allowsHitTesting(!isDragging)
-                .scaleEffect(sidebarViewScale) /// 1.0 when offset == bottomViewWidth (offset)
                 
                 handleTopScreen(bottomViewWidth: bottomViewWidth, isDragging: isDragging)
                     .padding(.top, geo.safeAreaInsets.top)
@@ -65,9 +65,6 @@ struct ContentView: View {
                 SettingsView(showSettingsView: $showSettingsView)
             }
             .ignoresSafeArea()
-            .onChange(of: sidebarViewScale) {
-                print(sidebarViewScale)
-            }
         }
     }
     
