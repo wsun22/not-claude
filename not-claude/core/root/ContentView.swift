@@ -26,7 +26,7 @@ struct ContentView: View {
             let bottomViewWidth: CGFloat = geo.size.width * 0.85
             var offsetPercent: CGFloat = offset / bottomViewWidth /// 0 to 1
             let minScale = 0.985 /// sidebar view scale
-            let maxTint = 0.15
+            let maxTint = 0.10
 
             ZStack(alignment: .leading) {
                 AppColors.backgroundSecondary.allowsHitTesting(false)
@@ -42,7 +42,10 @@ struct ContentView: View {
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
                 .scaleEffect(minScale + offsetPercent * (1 - minScale))
-                .overlay(Color.black.opacity((1 - offsetPercent) * maxTint))
+                .overlay(
+                    Color.black
+                        .opacity((1 - offsetPercent) * maxTint)
+                )
                 .allowsHitTesting(!isDragging)
                 
                 handleTopScreen(bottomViewWidth: bottomViewWidth, isDragging: isDragging)
@@ -51,11 +54,10 @@ struct ContentView: View {
                     .cornerRadius(45)
                     .overlay(RoundedRectangle(cornerRadius: 45).stroke(AppColors.outline, lineWidth: offset > 0 ? 0.15 : 0))
                     .overlay {
-                        if offset == bottomViewWidth {
-                            Color.clear
-                                .contentShape(RoundedRectangle(cornerRadius: 45))
-                                .simultaneousGesture(handleTap())
-                        }
+                        Color.black
+                            .contentShape(RoundedRectangle(cornerRadius: 45))
+                            .opacity(offsetPercent * maxTint * 0.5)
+                            .simultaneousGesture(handleTap())
                     }
                     .offset(x: offset)
                     .allowsHitTesting(!isDragging)

@@ -54,8 +54,7 @@ struct ChatView: View {
             HStack {
                 LiquidGlassButton(
                     systemName: "line.3.horizontal",
-                    foregroundColor: AppColors.textPrimary,
-                    backgroundColor: AppColors.backgroundSecondary) {
+                    foregroundColor: AppColors.textPrimary) {
                         withAnimation {
                             if lastOffset == 0 {
                                 offset = bottomViewWidth
@@ -74,8 +73,7 @@ struct ChatView: View {
                 
                 LiquidGlassButton(
                     systemName: "eye.slash",
-                    foregroundColor: AppColors.textPrimary,
-                    backgroundColor: AppColors.backgroundSecondary) {
+                    foregroundColor: AppColors.textPrimary) {
                     print("tapped")
                 }            }
             .padding(.top, 8)

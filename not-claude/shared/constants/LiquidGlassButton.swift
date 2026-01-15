@@ -14,6 +14,13 @@ struct LiquidGlassButton: View {
     let backgroundColor: Color
     let action: () -> Void
     
+    init(systemName: String, foregroundColor: Color, backgroundColor: Color = Color.clear, action: @escaping () -> Void) {
+        self.systemName = systemName
+        self.foregroundColor = foregroundColor
+        self.backgroundColor = backgroundColor
+        self.action = action
+    }
+    
     var body: some View {
         Button {
             action()
