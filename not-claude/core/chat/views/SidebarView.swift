@@ -15,7 +15,6 @@ struct SidebarView: View {
     @Binding var showSettingsView: Bool
     @ObservedObject var chatVM: ChatViewModel
     @EnvironmentObject var supabase: SupabaseManager
-    let bottomViewWidth: CGFloat
     
     var body: some View {
         GeometryReader { geo in
@@ -44,7 +43,6 @@ struct SidebarView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .scrollDisabled(offset != bottomViewWidth)
                 .padding(.horizontal, 16)
                 .border(.red, width: 2)
                 .overlay(alignment: .topLeading) {
@@ -98,13 +96,13 @@ private struct BottomAreaView: View {
     }
 }
 
-//#Preview {
-//    SidebarView(
-//        topView: .constant(.chat(Chat(userId: UUID()), true)),
-//        offset: .constant(0),
-//        lastOffset: .constant(0),
-//        showSettingsView: .constant(false),
-//        chatVM: ChatViewModel()
-//    )
-//    .environmentObject(SupabaseManager())
-//}
+#Preview {
+    SidebarView(
+        topView: .constant(.chat(Chat(userId: UUID()), true)),
+        offset: .constant(0),
+        lastOffset: .constant(0),
+        showSettingsView: .constant(false),
+        chatVM: ChatViewModel()
+    )
+    .environmentObject(SupabaseManager())
+}

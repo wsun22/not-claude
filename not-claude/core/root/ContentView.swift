@@ -36,8 +36,7 @@ struct ContentView: View {
                             offset: $offset,
                             lastOffset: $lastOffset,
                             showSettingsView: $showSettingsView,
-                            chatVM: chatVM,
-                            bottomViewWidth: bottomViewWidth)
+                            chatVM: chatVM)
                 .padding(.top, geo.safeAreaInsets.top)
                 .padding(.bottom, geo.safeAreaInsets.bottom)
                 .frame(width: bottomViewWidth)
